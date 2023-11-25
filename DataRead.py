@@ -15,8 +15,6 @@ class Data:
         self.InternalData.append(self.graphx)
         self.InternalData.append(self.graphy)
 
-        
-
 
 def FileReadSequential(Dataset):
     with open('data.txt', "r") as f:
