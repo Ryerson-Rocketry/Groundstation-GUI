@@ -1,19 +1,43 @@
-class Data:
+class DataTrack:
     def __init__(self):
         self.InternalData = []
+
+        #Coordinates
         self.x = []
         self.y = []
 
-        self.graphx = []
-        self.graphy = []
+        self.time = []
+        
+        #Data
+        self.pressure = []
+        self.temperature = []
+        self.signalStrength = []
+        self.batteryVoltage = []
 
-        self.LatestElement = 0
+        #persistence tracking
+        self.latestElement = 0
+        self.currentGraphTab = 3
+        self.changedState = False
+
+        self.graphDict = {
+            2:"Time",
+            3:"Pressure",
+            4:"Temperature",
+            5:"Signal Strength",
+            6:"Battery Voltage"
+        }
+
 
         #appends the 1D arrays for the individual components for the coordinates to the 2D array that encompasses both
         self.InternalData.append(self.x)
         self.InternalData.append(self.y)
-        self.InternalData.append(self.graphx)
-        self.InternalData.append(self.graphy)
+        self.InternalData.append(self.time)
+        self.InternalData.append(self.pressure)
+        self.InternalData.append(self.signalStrength)
+        self.InternalData.append(self.temperature)
+        self.InternalData.append(self.batteryVoltage)
+
+
 
 
 def FileReadSequential(Dataset):
@@ -22,23 +46,22 @@ def FileReadSequential(Dataset):
 
         CoordArrayList = f.readlines() #reads each line of the data file and splits it into a array list
 
-        lastLine = Dataset.LatestElement
+        lastLine = Dataset.latestElement
 
         CoordArrayList[lastLine] = CoordArrayList[lastLine].strip("\n")
         SplitArray = CoordArrayList[lastLine].split() #splits each line into the individual x and y components and records it
         Dataset.x.insert(lastLine,SplitArray[0]) 
         Dataset.y.insert(lastLine,SplitArray[1])
-        Dataset.graphx.insert(lastLine,SplitArray[2]) 
-        Dataset.graphy.insert(lastLine,SplitArray[3])
+        Dataset.time.insert(lastLine,SplitArray[2]) 
 
-        
+        Dataset.pressure.insert(lastLine,SplitArray[3])
+        Dataset.signalStrength.insert(lastLine,SplitArray[4])
+        Dataset.batteryVoltage.insert(lastLine,SplitArray[5])
+        Dataset.temperature.insert(lastLine,SplitArray[6])
 
-        if ((len(CoordArrayList) - 1) > (Dataset.LatestElement)):
-            Dataset.LatestElement += 1
+        if ((len(CoordArrayList) - 1) > (Dataset.latestElement)):
+            Dataset.latestElement += 1
 
-
-        
-        
 
         f.close()
 
@@ -55,6 +78,8 @@ def fileRead():
 
         graphx = []
         graphy = []
+
+        graph2y = []
 
         
 
