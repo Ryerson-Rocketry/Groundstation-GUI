@@ -69,7 +69,7 @@ def FileReadSequential(Dataset):
 
 
 
-def fileRead():
+def fileRead(): #obsolete
     with open('data.txt', "r") as f:
 
         Dataset = []

@@ -25,8 +25,6 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
     def __init__(self):
         super(MainWidget, self).__init__()
 
-        
-
         self.threadpool = QtCore.QThreadPool()
 
         self.setWindowTitle("Rocketry Ground Station GUI")
@@ -44,14 +42,17 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.buttonLeft = QtWidgets.QPushButton()
         self.buttonLeft.setText("Start")
 
+        self.buttonZoomIn = Button("+")
+        self.buttonZoomOut = Button("-")
+
         #Graph & Map & Other Widget Class Init ---
 
         self.DataPlot1 = Matplot() 
         self.DataPlot1.InitGraph("Time", "Pressure", "Pressure-Time Graph")
 
-        self.Map = Map()
         self.DataSet = DataRead.DataTrack()
-
+        self.Map = Map(self.DataSet)   
+        self.mapState = False
 
         self.tabButton1 = Button("Pressure:")
         self.tabButton2 = Button("Temperature:")
@@ -63,7 +64,6 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         #Graph & Map Class Init ---
         
         #Layouts ---
-
         tabLayout = QtWidgets.QHBoxLayout()
         tabLayout.addWidget(self.tabButton1)
         tabLayout.addWidget(self.tabButton2)
@@ -89,13 +89,15 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         widget = QtWidgets.QWidget(self)
         
         layoutMain = QtWidgets.QGridLayout()
-        layoutMain.addWidget(self.Map, 0,0,8,3) #to be contained in cell row:0,column:0, spanning 1 row and 3 columns
+        layoutMain.addWidget(self.Map, 0,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
+        layoutMain.addWidget(self.buttonZoomIn, 9,0,1,1)
+        layoutMain.addWidget(self.buttonZoomOut, 9,1,1,1)
         layoutMain.addLayout(self.dataLayout, 1, 3, 1, 2)
 
         widget.setLayout(layoutMain)
         self.setCentralWidget(widget)
        
-        #"Signals" the "Slots"
+        #Signals
         self.buttonLeft.clicked.connect(self.buttonLeftInteraction) 
         self.threadUseButton.clicked.connect(self.threadUseCheck) 
 
@@ -103,11 +105,18 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.tabButton2.clicked.connect(lambda x: self.tabSwitching(4))
         self.tabButton3.clicked.connect(lambda x: self.tabSwitching(5))
         self.tabButton4.clicked.connect(lambda x: self.tabSwitching(6))
-        
 
+        self.buttonZoomIn.clicked.connect(lambda x: self.mapZoom(1))
+        self.buttonZoomOut.clicked.connect(lambda x: self.mapZoom(2))
     
-    #Tab switching
-    @QtCore.Slot()
+
+    #Slots 
+    @QtCore.Slot()    
+    def mapZoom(self, zoomlevel):
+        self.Map.mapZoom(zoomlevel)
+        self.Map.draw()
+
+    @QtCore.Slot() #Tab switching
     def tabSwitching(self, tabNum):
         self.DataSet.currentGraphTab = tabNum
         print (tabNum) #debug 
@@ -128,12 +137,12 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
     def buttonLeftInteraction(self):    
 
         def execute(): #map thread
-            Latest = DataRead.FileReadSequential(self.DataSet) #A 2D array for x,y coordinates
+            DataRead.FileReadSequential(self.DataSet) #Needed to get the latest data points in the datafile
             
             while True:
                 i = self.DataSet.latestElement -1
 
-                self.Map.mapPlotting(self.DataSet)
+                self.Map.mapPlotting()
                 self.Map.draw()
                 
                 print (self.DataSet.InternalData[0][i] + "," + self.DataSet.InternalData[1][i]) #debug
@@ -141,30 +150,30 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                 self.label1.setText("Acceleration:" + self.DataSet.InternalData[2][i])
                 self.label2.setText("Pressure:" + self.DataSet.InternalData[3][i])
 
-                Latest = DataRead.FileReadSequential(self.DataSet) #A 2D array for x,y coordinates  
+                DataRead.FileReadSequential(self.DataSet)   
+                
+                self.mapState = True #tells the graph thread that it can plot
 
-                time.sleep(1)
+                time.sleep(1)               
 
         def execute2(): #graph thread
-            Latest = DataRead.FileReadSequential(self.DataSet) #A 2D array for x,y coordinates
+            DataRead.FileReadSequential(self.DataSet) #Needed to get the latest data points in the datafile
                 
             while True:
 
-                if (self.DataSet.changedState == True):
+                if (self.DataSet.changedState == True): #replots a new graph anytime a new tab (with new data types) is pressed
 
                     self.DataSet.changedState = False
                     self.DataPlot1.axes.clear()
                     self.DataPlot1.InitGraph("Time", self.DataSet.graphDict[self.DataSet.currentGraphTab], self.DataSet.graphDict[self.DataSet.currentGraphTab] + "-Time Graph")
+                    self.DataPlot1.redrawGraph(self.DataSet)
 
-                    self.DataPlot1.redrawGraph(self.DataSet)       
+                while self.mapState == True: #only plots after the map has plotted to maintain syncronization    
 
-                i = self.DataSet.latestElement - 1
+                    self.DataPlot1.plotPoint(self.DataSet)
+                    self.mapState = False
 
-                self.DataPlot1.axes.scatter(float(self.DataSet.InternalData[2][i]), float(self.DataSet.InternalData[self.DataSet.currentGraphTab][i]))
-                self.DataPlot1.draw()
-
-                time.sleep(1)
-                
+                time.sleep(0.01)
 
         #Seperates the above executed code into two seperate thread, consequently the main thread (and window) won't go unresponsive as well as the graph being able to update independently of the map
         thread = WorkerThread(execute)
@@ -207,29 +216,36 @@ class Matplot(Graph):
         i = DataSet.latestElement - 1
         for x in range (DataSet.latestElement - 1):
             self.axes.scatter(float(DataSet.InternalData[2][x]), float(DataSet.InternalData[DataSet.currentGraphTab][x]))
+        self.draw()
+
+    def plotPoint (self, DataSet):
+
+        i = DataSet.latestElement - 1
+
+        self.axes.scatter(float(DataSet.InternalData[2][i]), float(DataSet.InternalData[DataSet.currentGraphTab][i]), )
+        self.draw()
 
 
 class Map(Graph):
-    def __init__(self):
+    def __init__(self, DataSet):
         super(Map, self).__init__()
+        self.zoomScale = 2.5 #initial zoom
 
+        self.DataSet = DataSet
         self.figure = plt.figure()
         self.canvas = Graph (self.figure)
         self.axes = self.figure.add_subplot(1,1,1, projection = ccrs.PlateCarree())
 
         self.initMap() 
 
-    def initMap(self): #Since main method of rendering the map is to draw , clear, and redraw the map, defined a function to do all of that easily
+    def initMap(self): #Since main method of rendering the map is to draw , clear, and redraw the map, defined a function to do that
         self.axes = plt.axes(projection=ccrs.PlateCarree())
         self.axes.coastlines()
         
         self.axes.gridlines(draw_labels=True,dms = True,x_inline = False, y_inline = False) #grid and coordinate axises
 
-        #ignore
-        #self.axes.set_extent([0 ,80 ,0,80])
-        #self.axes.stock_img()#scipy required, overlays a actual graphical image onto the map
-
-        self.axes.add_feature(cfeature.NaturalEarthFeature(category= 'cultural', name= 'urban_areas', scale='10m', facecolor='grey'))
+        #self.axes.add_feature(cfeature.NaturalEarthFeature(category= 'cultural', name= 'urban_areas', scale='10m', facecolor='grey'))
+        #self.axes.add_feature(cfeature.NaturalEarthFeature(category= 'raster', name= 'natural_earth1', scale='50m'))
 
         #preset features 
         self.axes.add_feature(cfeature.LAKES)
@@ -238,19 +254,41 @@ class Map(Graph):
         self.axes.add_feature(cfeature.LAND)
         self.axes.add_feature(cfeature.BORDERS)
 
-    def mapPlotting(self,DataSet):
+    def mapPlotting(self):
         self.figure.clear()
 
-        base_lat, base_long =   float(DataSet.InternalData[0][DataSet.latestElement - 1]), float(DataSet.InternalData[1][DataSet.latestElement - 1])   #-79.38 , 43.65
-        base_lat2, base_long2 =   float(DataSet.InternalData[0][0]), float(DataSet.InternalData[1][0])
+        base_lat, base_long =   float(self.DataSet.InternalData[0][self.DataSet.latestElement - 1]), float(self.DataSet.InternalData[1][self.DataSet.latestElement - 1])   #-79.38 , 43.65
+        base_lat2, base_long2 =   float(self.DataSet.InternalData[0][0]), float(self.DataSet.InternalData[1][0])
 
         self.initMap()
 
         plt.plot([base_lat],[base_long], color = 'blue', linewidth = '2', marker= 'o')
-        plt.text (base_lat2, base_long2, 'launch point', transform = ccrs.PlateCarree())
-        plt.text (base_lat + 0.10, base_long - 0.20 , str(base_lat) + " " +  str(base_long), transform = ccrs.PlateCarree())
-    
+        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale])
+        plt.text (base_lat + 0.010, base_long - 0.020 , str(base_lat) + " " +  str(base_long), transform = ccrs.PlateCarree())
 
+    def mapZoom(self, zoomType):
+        
+        if (zoomType == 1):
+            self.zoomScale = self.zoomScale + 0.25;
+         
+        if (self.zoomScale <= 0.25):
+            return
+       
+        if (zoomType == 2):
+                self.zoomScale = self.zoomScale - 0.25;
+        
+        self.figure.clear()
+    
+        base_lat, base_long =   float(self.DataSet.InternalData[0][self.DataSet.latestElement - 1]), float(self.DataSet.InternalData[1][self.DataSet.latestElement - 1])
+        
+        self.initMap()
+
+        plt.plot([base_lat],[base_long], color = 'blue', linewidth = '2', marker= 'o')
+        plt.text (base_lat + 0.010, base_long - 0.020 , str(base_lat) + " " +  str(base_long), transform = ccrs.PlateCarree())
+
+        plt.draw()
+        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale], ccrs.PlateCarree())
+        
 class Button (QtWidgets.QPushButton):
     def __init__(self, text):
         super(Button, self).__init__()
