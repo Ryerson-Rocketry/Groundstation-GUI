@@ -25,8 +25,6 @@ import MainWindow
 class MainWidget(QtWidgets.QMainWindow): #Main Class
     def __init__(self):
         super(MainWidget, self).__init__()
-
-        
         
         self.threadpool = QtCore.QThreadPool()
 
@@ -45,6 +43,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         
         self.Map = Map(self.DataSet)   
         self.mapState = False
+        self.graphState = False
 
         #Graph & Map Class Init ---
 
@@ -93,7 +92,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
     @QtCore.Slot()    
     def mapPan(self, panType):
-        self.Map.mapPan(panType)
+        self.Map.mapPan(panType, self.DataSet)
         self.Map.draw()
 
     @QtCore.Slot() #Tab switching
@@ -102,11 +101,11 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         print (tabNum) #debug 
         self.mainWindowUI.StackedGraphs.setCurrentIndex(tabNum - 3)
 
-        
     @QtCore.Slot()
     def threadUseCheck(self):
         def execute():
-            self.mainWindowUI.label4.setText("Current Qthread Usage: " + str(self.threadpool.activeThreadCount()) + "/16")
+            self.DataSet.timeSync()
+            self.mainWindowUI.label4.setText("Current Time: " + str(self.DataSet.currentTime))
 
         thread = WorkerThread(execute)
         self.threadpool.start(thread)
@@ -116,46 +115,61 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
         def execute(): #map thread
             
-            
             while True:
-                DataRead.FileReadSequential(self.DataSet) #Needed to get the latest data points in the datafile
+                while self.graphState == True:
 
-                self.DataSet.maprunning = True
+                    self.DataSet.maprunning = True
 
-                i = self.DataSet.latestElement -1
+                    i = self.DataSet.latestElement
 
-                self.Map.mapPlotting()
-                self.Map.draw()
-                
-                print (str(self.DataSet.InternalData[0][i]) + "," + str(self.DataSet.InternalData[1][i])) #debug
+                    self.Map.mapPlotting()
+                    self.Map.draw()
+                    
+                    print (str(self.DataSet.InternalData[0][i]) + "," + str(self.DataSet.InternalData[1][i])) #debug
 
-                self.mainWindowUI.label1.setText("Acceleration:" + str(self.DataSet.InternalData[2][i]))
-                self.mainWindowUI.label2.setText("Pressure:" + str(self.DataSet.InternalData[3][i]))
+                    self.mainWindowUI.label1.setText("Acceleration:" + str(self.DataSet.InternalData[2][i]))
+                    self.mainWindowUI.label2.setText("Pressure:" + str(self.DataSet.InternalData[3][i]))
 
-                self.DataSet.maprunning = False
-                
-                self.mapState = True #tells the graph thread that it can plot
-                time.sleep(1)               
+                    self.DataSet.maprunning = False
 
-        def execute2(): #graph thread
-        
-                
+                    self.graphState = False
+                    self.mapState = True #tells the graph thread that it can plot
+
+                time.sleep(0.1)
+               
+        def execute2(): #graph thread (not needed?)
             while True:
-                while self.mapState == True: #only plots after the map has plotted to maintain sync
+                while self.mapState == True: 
 
                     for i in range(len(self.dataPlots)): #Plots all graphs at once
                         self.dataPlots[i].plotPoint(self.DataSet, i)
+
                     
-                    #self.dataPlots[self.DataSet.currentGraphTab-3].draw()
                     self.mapState = False
 
-                time.sleep(0.01)
+                time.sleep(0.1)
 
-        #Seperates the above executed code into two seperate thread, consequently the main thread (and window) won't go unresponsive as well as the graph being able to update independently of the map
+        def execute3(): #newdataelementcheck
+            while True:
+                temp = self.DataSet.latestElement
+                
+                DataRead.FileReadSequential(self.DataSet)
+
+                if (self.DataSet.latestElement != temp):
+                    self.graphState = True
+                    #self.mapState = True
+
+                time.sleep(0.1)
+
+                    
+
         thread = WorkerThread(execute)
         thread2 = WorkerThread(execute2) 
+        thread3 = WorkerThread(execute3) 
         self.threadpool.start(thread)
         self.threadpool.start(thread2)
+        self.threadpool.start(thread3)
+
 
         
 #Multithreading
@@ -170,7 +184,6 @@ class WorkerThread(QtCore.QRunnable):
     @QtCore.Slot()  
     def run(self):
         self.fn(*self.args, **self.kwargs)
-
 
 class Matplot(Graph):
 
@@ -192,22 +205,24 @@ class Matplot(Graph):
     #plots all points up to the latest element in the dataset - UNUSED
     def redrawGraph (self, DataSet):
         i = DataSet.latestElement - 1
+
         for x in range (DataSet.latestElement - 1):
             self.axes.scatter(float(DataSet.InternalData[2][x]), float(DataSet.InternalData[DataSet.currentGraphTab][x]))
 
     def plotPoint (self, DataSet, graphIndex):
         i = DataSet.latestElement - 1
 
-        if (DataSet.toleranceAndCorruption(graphIndex) == False):
+        if (DataSet.tolerance(graphIndex) == False):
             self.axes.scatter(float(DataSet.InternalData[2][i]), float(DataSet.InternalData[self.graphIndex][i]) )
             self.draw()
-
 
 class Map(Graph):
     def __init__(self, DataSet):
         super(Map, self).__init__()
         self.zoomScale = 2.5 #initial zoom
         self.panLocation = [0.0,0.0]
+        self.pan_lat = 0.0
+        self.pan_long = 0.0
         self.mapDecouple = False #wheater to center on rocket or allow for panning
 
         self.DataSet = DataSet
@@ -247,19 +262,19 @@ class Map(Graph):
     def mapPlotting(self):
         self.figure.clear()
 
-        base_lat, base_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement - 1]) + self.panLocation[0], float(self.DataSet.InternalData[1][self.DataSet.latestElement - 1]) + self.panLocation[1]   #-79.38 , 43.65
-        base_lat2, base_long2 = float(self.DataSet.InternalData[0][self.DataSet.latestElement - 1]), float(self.DataSet.InternalData[1][self.DataSet.latestElement - 1])
+        base_lat, base_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement]), float(self.DataSet.InternalData[1][self.DataSet.latestElement])  #-79.38 , 43.65
+        self.pan_lat, self.pan_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement]) + self.panLocation[0], float(self.DataSet.InternalData[1][self.DataSet.latestElement]) + self.panLocation[1] #updates the pan location relative to rocket
 
         self.initMap()
 
-        self.axes.plot(base_lat2 , base_long2, color = 'blue', linewidth = '2', marker= 'o') #Map "Central Focus"
-        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale]) # Zoom Scale
+        if (self.mapDecouple == True):
+            self.axes.set_extent([self.pan_lat - self.zoomScale ,self.pan_lat + self.zoomScale ,self.pan_long - self.zoomScale, self.pan_long + self.zoomScale])
+        else:  
+            self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale]) # Zoom Scale
 
-        self.axes.text (base_lat + 0.010, base_long - 0.020 , str(base_lat) + " " +  str(base_long))
-
-        self.axes.plot([base_lat],[base_long], color = 'blue', linewidth = '2', marker= 'o') #Actual Rocket
-
-        self.axes.plot (-79.38 , 43.65, color = 'red', linewidth = '2', marker= 'o')  #Launch Point
+        self.axes.plot (base_lat , base_long, color = 'blue', linewidth = '2', marker= 'o' ) #Rocket
+        self.axes.plot ((self.pan_lat) ,(self.pan_long), color = 'red', linewidth = '3', marker= 'x')  #Map Focus Point
+        self.axes.plot (-79.38 , 43.65, color = 'red', linewidth = '2', marker= 'o') #Launch Point
         self.axes.text (-79.48 , 43.75 ,"Launch Point")
 
     def mapZoom(self, zoomType, dataSet):
@@ -269,47 +284,42 @@ class Map(Graph):
 
         if (zoomType == 1):
             self.zoomScale = self.zoomScale + 0.25;   
-        if (self.zoomScale <= 0.25):
+        if (self.zoomScale <= 0.25): # so zoom function doesn't invert itself when zoom is negative
             return
         if (zoomType == 2):
                 self.zoomScale = self.zoomScale - 0.25;
         
+        self.mapPlotting()
+
+    def mapPan(self, panType, dataSet):
+
+        if (dataSet.maprunning == True):
+            return 
+        
         self.figure.clear()
     
-        base_lat, base_long =   float(self.DataSet.InternalData[0][self.DataSet.latestElement - 1]) + self.panLocation[0], float(self.DataSet.InternalData[1][self.DataSet.latestElement - 1]) + self.panLocation[1]
-        
-        self.initMap()
-
-        self.axes.plot([base_lat],[base_long], color = 'blue', linewidth = '2', marker= 'o')
-        self.axes.text (base_lat + 0.010, base_long - 0.020 , str(base_lat) + " " +  str(base_long), transform = ccrs.PlateCarree())
-
-        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale], ccrs.PlateCarree())
-        plt.draw()
-        
-    def mapPan(self, panType):
-        self.figure.clear()
-
         match(panType):
             case 1: #X Left
-                self.panLocation[0] = self.panLocation[0] - 2.5
+                self.panLocation[0] = self.panLocation[0] - 0.5
             case 2: #X right
-                self.panLocation[0] = self.panLocation[0] + 2.5
+                self.panLocation[0] = self.panLocation[0] + 0.5
             case 3: #Y up
-                self.panLocation[1] = self.panLocation[1] + 2.5
+                self.panLocation[1] = self.panLocation[1] + 0.5
             case 4: #Y down
-                self.panLocation[1] = self.panLocation[1] - 2.5
+                self.panLocation[1] = self.panLocation[1] - 0.5
 
+        base_lat, base_long =   float(self.DataSet.InternalData[0][self.DataSet.latestElement]), float(self.DataSet.InternalData[1][self.DataSet.latestElement])
+        self.pan_lat, self.pan_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement] + self.panLocation[0]), float(self.DataSet.InternalData[1][self.DataSet.latestElement]  + self.panLocation[1])
 
-        base_lat, base_long =   float(self.DataSet.InternalData[0][self.DataSet.latestElement - 1]) + self.panLocation[0], float(self.DataSet.InternalData[1][self.DataSet.latestElement - 1]) + self.panLocation[1]
+        if (self.mapDecouple == True):
+            self.axes.set_extent([self.pan_lat - self.zoomScale ,self.pan_lat + self.zoomScale ,self.pan_long - self.zoomScale, self.pan_long + self.zoomScale])
+        else:  
+            self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale] ) # Zoom Scale
+        
+            #ccrs.PlateCarree()
 
+        self.mapPlotting()
 
-        self.initMap()
-
-        self.axes.plot([base_lat],[base_long], color = 'blue', linewidth = '2', marker= 'o')
-        self.axes.text (base_lat + 0.010, base_long - 0.020 , str(base_lat) + " " +  str(base_long), transform = ccrs.PlateCarree())
-
-        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale], ccrs.PlateCarree())
-        plt.draw()
 
         
 if __name__ == "__main__":

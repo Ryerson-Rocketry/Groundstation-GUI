@@ -35,7 +35,7 @@ class mainWindowUI(object):
         self.label3 = QtWidgets.QLabel()
         self.label3.setText("Placeholder: 0")
         self.label4 = QtWidgets.QLabel()
-        self.label4.setText("Current Qthread Usage: 1/16")
+        self.label4.setText("Current Time: ")
 
         self.buttonLeft = QtWidgets.QPushButton()
         self.buttonLeft.setText("Start")
@@ -60,12 +60,8 @@ class mainWindowUI(object):
         self.tabButton2 = Button("Temperature:")
         self.tabButton3 = Button("Signal Strength:")
         self.tabButton4 = Button("Battery Voltage:")
-        self.tabButton5 = Button("placeholder1:")
-        self.tabButton6 = Button("placeholder2:")
-        self.tabButton7 = Button("placeholder3:")
-        self.tabButton8 = Button("placeholder4:")
 
-        self.threadUseButton = Button("Check Qthread Usage")
+        self.threadUseButton = Button("Time")
         
         #Layouts ---
         tabLayout = QtWidgets.QHBoxLayout()
