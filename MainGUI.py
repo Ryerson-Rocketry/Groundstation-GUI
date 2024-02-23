@@ -22,6 +22,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Graph
 import DataRead
 import MainWindow
 
+import ReadIn
+
 class MainWidget(QtWidgets.QMainWindow): #Main Class
     def __init__(self):
         super(MainWidget, self).__init__()
@@ -144,24 +146,22 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                     for i in range(len(self.dataPlots)): #Plots all graphs at once
                         self.dataPlots[i].plotPoint(self.DataSet, i)
 
-                    
                     self.mapState = False
 
                 time.sleep(0.1)
 
         def execute3(): #newdataelementcheck
             while True:
-                temp = self.DataSet.latestElement
-                
-                DataRead.FileReadSequential(self.DataSet)
 
-                if (self.DataSet.latestElement != temp):
+                #previous = self.DataSet.latestElement
+                if (ReadIn.parse(string, self.DataSet) != False):
+                    
+
+                    #if (self.DataSet.latestElement != previous):
                     self.graphState = True
                     #self.mapState = True
 
                 time.sleep(0.1)
-
-                    
 
         thread = WorkerThread(execute)
         thread2 = WorkerThread(execute2) 

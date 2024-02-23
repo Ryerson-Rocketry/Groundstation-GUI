@@ -48,53 +48,23 @@ class DataTrack:
         currentLong = self.InternalData[1][self.latestElement]
         previousLat = self.InternalData[0][self.latestElement - 1]
         previousLong = self.InternalData[1][self.latestElement - 1]
-        latLongTolerance = 5
+        previousTime  = self.InternalData[2][self.latestElement - 1] 
+        currentTime = self.InternalData[2][self.latestElement]
 
-        #Outlier Detection GPS (placeholder)
-        if (((currentLat - previousLat) > latLongTolerance) or ((currentLong - previousLong) > latLongTolerance)):
-            self.ignoreDataElements.append(self.latestElement) #FIX
-            return True
-        
-        #Outlier Detection Data (placeholder)
-        if ((self.InternalData[graphIndex][self.latestElement - 1] - self.InternalData[graphIndex][self.latestElement]) > 5):
-            return True
-        
-        #Time
-        if ((self.InternalData[graphIndex][self.latestElement - 1] - self.InternalData[graphIndex][self.latestElement]) > 5):
-            return True
-        else:
-            return False
+
+        deltaDistanceLat = previousLat - currentLat
+        deltaDistanceLong = previousLong - currentLong
+        deltaTime = previousTime - currentTime
+
+        #Outlier Detection GPS
+        #if ((deltaDistanceLong / deltaTime) > 0.5):
+        #    return False
+
+        return False #placeholder
+            
         
     def timeSync (self):
         self.currentTime = datetime.datetime.now()
-
-
-"""
-def FileReadSequential(Dataset):
-    with open('data.txt', "r") as f:
-
-        CoordArrayList = f.readlines() #reads each line of the data file and splits it into a array list
-
-        lastLine = Dataset.latestElement
-
-        CoordArrayList[lastLine] = CoordArrayList[lastLine].strip("\n")
-        SplitArray = CoordArrayList[lastLine].split() #splits each line into the individual x and y components and records it
-        Dataset.x.insert(lastLine,float(SplitArray[0])) 
-        Dataset.y.insert(lastLine,float(SplitArray[1]))
-        Dataset.time.insert(lastLine,float(SplitArray[2])) 
-
-        Dataset.pressure.insert(lastLine,float(SplitArray[3]))
-        Dataset.signalStrength.insert(lastLine,float(SplitArray[4]))
-        Dataset.batteryVoltage.insert(lastLine,float(SplitArray[5]))
-        Dataset.temperature.insert(lastLine,float(SplitArray[6]))
-
-        if ((len(CoordArrayList) - 1) > (Dataset.latestElement)):
-            Dataset.latestElement += 1
-
-        f.close()
-
-    return Dataset
-"""
 
 
 def FileReadSequential(Dataset):
@@ -106,10 +76,27 @@ def FileReadSequential(Dataset):
         lastLine = len(CoordArrayList) - 1
 
         CoordArrayList[lastLine] = CoordArrayList[lastLine].strip("\n")
-        SplitArray = CoordArrayList[lastLine].split() #splits each line into the individual x and y components and records it
+
+        SplitArray = CoordArrayList[lastLine].split(",") #splits each line into the individual x and y components and records it
+        
+        for i in SplitArray: #null and valid character detection
+
+            if (i == ""):
+                return False
+            
+            tempCheck = list(i)
+            for j in tempCheck:
+                if (((ord(j) < 48) or (ord(j) > 57))):
+                    if (ord(j) == 45) or (ord(j) == 32) or (ord(j) == 46):
+                        pass
+                    else:
+                        #print (str(ord(j)) + " failed")
+                        return False
+                
         Dataset.x.insert(lastLine,float(SplitArray[0])) 
         Dataset.y.insert(lastLine,float(SplitArray[1]))
         Dataset.time.insert(lastLine,float(SplitArray[2])) 
+
 
         Dataset.pressure.insert(lastLine,float(SplitArray[3]))
         Dataset.signalStrength.insert(lastLine,float(SplitArray[4]))
