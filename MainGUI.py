@@ -152,13 +152,12 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
         def execute3(): #newdataelementcheck
             while True:
+                
+                DataRead.FileReadSequential(self.DataSet)
+                print ("test")
+                #if (DataRead.FileReadSequential(self.DataSet) != False):
 
-                #previous = self.DataSet.latestElement
-                if (ReadIn.parse(string, self.DataSet) != False):
-                    
-
-                    #if (self.DataSet.latestElement != previous):
-                    self.graphState = True
+                self.graphState = True
                     #self.mapState = True
 
                 time.sleep(0.1)
