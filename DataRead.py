@@ -77,7 +77,8 @@ def FileReadSequential(Dataset):
 
         CoordArrayList[lastLine] = CoordArrayList[lastLine].strip("\n")
 
-        SplitArray = CoordArrayList[lastLine].split(",") #splits each line into the individual x and y components and records it
+        SplitArray = CoordArrayList[lastLine].split() #splits each line into the individual x and y components and records it
+        
         
         for i in SplitArray: #null and valid character detection
 
@@ -92,6 +93,7 @@ def FileReadSequential(Dataset):
                     else:
                         #print (str(ord(j)) + " failed")
                         return False
+        
                 
         Dataset.x.insert(lastLine,float(SplitArray[0])) 
         Dataset.y.insert(lastLine,float(SplitArray[1]))
@@ -109,7 +111,3 @@ def FileReadSequential(Dataset):
         f.close()
 
     return Dataset
-
-
-
-

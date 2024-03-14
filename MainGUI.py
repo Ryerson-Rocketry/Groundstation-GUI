@@ -22,8 +22,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Graph
 import DataRead
 import MainWindow
 
-import ReadIn
-
 class MainWidget(QtWidgets.QMainWindow): #Main Class
     def __init__(self):
         super(MainWidget, self).__init__()
@@ -74,18 +72,8 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.mainWindowUI.buttonPanUp.clicked.connect(lambda x: self.mapPan(3))
         self.mainWindowUI.buttonPanDown.clicked.connect(lambda x: self.mapPan(4))
 
-        self.mainWindowUI.buttonMapFocus.clicked.connect(self.mapFocus)
     
     #Slots 
-    @QtCore.Slot()    
-    def mapFocus(self):
-        if self.Map.getMapDecouple() == False:
-            self.mainWindowUI.buttonMapFocus.setText("Focus on rocket")
-            self.Map.setMapDecouple()
-        
-        else:
-            self.mainWindowUI.buttonMapFocus.setText("Unfocus on rocket")
-            self.Map.setMapDecouple()
         
     @QtCore.Slot()    
     def mapZoom(self, zoomlevel):
@@ -127,7 +115,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                     self.Map.mapPlotting()
                     self.Map.draw()
                     
-                    print (str(self.DataSet.InternalData[0][i]) + "," + str(self.DataSet.InternalData[1][i])) #debug
+                    #print (str(self.DataSet.InternalData[0][i]) + "," + str(self.DataSet.InternalData[1][i])) #debug
 
                     self.mainWindowUI.label1.setText("Acceleration:" + str(self.DataSet.InternalData[2][i]))
                     self.mainWindowUI.label2.setText("Pressure:" + str(self.DataSet.InternalData[3][i]))
@@ -152,14 +140,13 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
         def execute3(): #newdataelementcheck
             while True:
+                
+                DataRead.FileReadSequential(self.DataSet)
+                #print ("test")
+                if (DataRead.FileReadSequential(self.DataSet) != False):
 
-                #previous = self.DataSet.latestElement
-                if (ReadIn.parse(string, self.DataSet) != False):
-                    
-
-                    #if (self.DataSet.latestElement != previous):
                     self.graphState = True
-                    #self.mapState = True
+                        #self.mapState = True
 
                 time.sleep(0.1)
 
@@ -219,11 +206,10 @@ class Matplot(Graph):
 class Map(Graph):
     def __init__(self, DataSet):
         super(Map, self).__init__()
-        self.zoomScale = 2.5 #initial zoom
+        self.zoomScale = 1.0 #initial zoom
         self.panLocation = [0.0,0.0]
         self.pan_lat = 0.0
         self.pan_long = 0.0
-        self.mapDecouple = False #wheater to center on rocket or allow for panning
 
         self.DataSet = DataSet
         self.figure = plt.figure()
@@ -234,14 +220,6 @@ class Map(Graph):
 
         self.initMap() 
 
-    def setMapDecouple(self):
-        if self.mapDecouple == False:
-            self.mapDecouple = True
-        else:
-            self.mapDecouple = False
-    
-    def getMapDecouple(self):
-        return self.mapDecouple
 
     def initMap(self): #Since main method of rendering the map is to draw , clear, and redraw the map, defined a function to do that
         self.axes = plt.axes(projection=ccrs.PlateCarree())
@@ -266,30 +244,22 @@ class Map(Graph):
         self.pan_lat, self.pan_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement]) + self.panLocation[0], float(self.DataSet.InternalData[1][self.DataSet.latestElement]) + self.panLocation[1] #updates the pan location relative to rocket
 
         self.initMap()
+        self.mapZoom()
 
-        if (self.mapDecouple == True):
-            self.axes.set_extent([self.pan_lat - self.zoomScale ,self.pan_lat + self.zoomScale ,self.pan_long - self.zoomScale, self.pan_long + self.zoomScale])
-        else:  
-            self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale]) # Zoom Scale
+        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale]) # Zoom Scale
 
         self.axes.plot (base_lat , base_long, color = 'blue', linewidth = '2', marker= 'o' ) #Rocket
         self.axes.plot ((self.pan_lat) ,(self.pan_long), color = 'red', linewidth = '3', marker= 'x')  #Map Focus Point
         self.axes.plot (-79.38 , 43.65, color = 'red', linewidth = '2', marker= 'o') #Launch Point
         self.axes.text (-79.48 , 43.75 ,"Launch Point")
 
-    def mapZoom(self, zoomType, dataSet):
-        
-        if (dataSet.maprunning == True):
-            return 
+    def mapZoom(self):
 
-        if (zoomType == 1):
-            self.zoomScale = self.zoomScale + 0.25;   
-        if (self.zoomScale <= 0.25): # so zoom function doesn't invert itself when zoom is negative
-            return
-        if (zoomType == 2):
-                self.zoomScale = self.zoomScale - 0.25;
+        self.zoomScale = ((-79.48 - (self.DataSet.InternalData[0][self.DataSet.latestElement]))  + 0.5)
+        self.zoomScale = abs(self.zoomScale)
         
-        self.mapPlotting()
+        print (self.zoomScale)
+
 
     def mapPan(self, panType, dataSet):
 
@@ -311,10 +281,8 @@ class Map(Graph):
         base_lat, base_long =   float(self.DataSet.InternalData[0][self.DataSet.latestElement]), float(self.DataSet.InternalData[1][self.DataSet.latestElement])
         self.pan_lat, self.pan_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement] + self.panLocation[0]), float(self.DataSet.InternalData[1][self.DataSet.latestElement]  + self.panLocation[1])
 
-        if (self.mapDecouple == True):
-            self.axes.set_extent([self.pan_lat - self.zoomScale ,self.pan_lat + self.zoomScale ,self.pan_long - self.zoomScale, self.pan_long + self.zoomScale])
-        else:  
-            self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale] ) # Zoom Scale
+
+        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale] ) # Zoom Scale
         
             #ccrs.PlateCarree()
 
@@ -330,6 +298,4 @@ if __name__ == "__main__":
     MainWindow.show()
 
     sys.exit(app.exec())
-
-
 
