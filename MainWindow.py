@@ -22,20 +22,22 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Graph
 import DataRead
 
 class mainWindowUI(object):
-
-
     def setup(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
 
         self.label1 = QtWidgets.QLabel()
-        self.label1.setText("Acceleration: 0")
+        self.label1.setText("Current Timestamp: 0 Seconds")
         self.label2 = QtWidgets.QLabel()
-        self.label2.setText("Pressure: 0")
+        self.label2.setText("Accelerometer X: 0")
         self.label3 = QtWidgets.QLabel()
-        self.label3.setText("Placeholder: 0")
+        self.label3.setText("Accelerometer Y: 0")
         self.label4 = QtWidgets.QLabel()
-        self.label4.setText("Current Time: ")
+        self.label4.setText("Accelerometer Z: 0")  
+        self.label5 = QtWidgets.QLabel()
+        self.label5.setText("Pressure: 0")
+        self.label6 = QtWidgets.QLabel()
+        self.label6.setText("Temperature: 0")
 
         self.buttonLeft = QtWidgets.QPushButton()
         self.buttonLeft.setText("Start")
@@ -45,9 +47,6 @@ class mainWindowUI(object):
 
         self.buttonLeft = QtWidgets.QPushButton()
         self.buttonLeft.setText("Start")
-
-        self.buttonZoomIn = Button("+")
-        self.buttonZoomOut = Button("-")
 
         self.buttonPanLeft = Button("<")
         self.buttonPanRight = Button(">") 
@@ -85,6 +84,8 @@ class mainWindowUI(object):
         dataChildLayout.addWidget(self.label2)
         dataChildLayout.addWidget(self.label3)
         dataChildLayout.addWidget(self.label4)
+        dataChildLayout.addWidget(self.label5) 
+        dataChildLayout.addWidget(self.label6)
 
         self.dataLayout.addLayout(tabLayout,1,0)
         self.dataLayout.addLayout(dataChildLayout,3,0)
@@ -94,12 +95,12 @@ class mainWindowUI(object):
 
         self.layoutMain = QtWidgets.QGridLayout()
         self.layoutMain.addWidget(MainWindow.Map, 0,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
-        self.layoutMain.addWidget(self.buttonZoomIn, 9,0,1,1)
-        self.layoutMain.addWidget(self.buttonZoomOut, 9,2,1,1)
-        self.layoutMain.addWidget(self.buttonPanLeft, 10,0,1,1)
-        self.layoutMain.addWidget(self.buttonPanRight, 10,2,1,1)
-        self.layoutMain.addWidget(self.buttonPanUp, 9,1,1,1)
-        self.layoutMain.addWidget(self.buttonPanDown, 10,1,1,1)
+        #self.layoutMain.addWidget(self.buttonZoomIn, 9,0,1,1)
+        #self.layoutMain.addWidget(self.buttonZoomOut, 9,2,1,1)
+        #self.layoutMain.addWidget(self.buttonPanLeft, 10,0,1,1)
+        #self.layoutMain.addWidget(self.buttonPanRight, 10,2,1,1)
+        #self.layoutMain.addWidget(self.buttonPanUp, 9,1,1,1)
+        #self.layoutMain.addWidget(self.buttonPanDown, 10,1,1,1)
         self.layoutMain.addLayout(self.dataLayout, 1, 3, 1, 2)
 
 class Button (QtWidgets.QPushButton):
