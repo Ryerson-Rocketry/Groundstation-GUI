@@ -22,9 +22,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Graph
 import DataRead
 import MainWindow
 
-LAUNCH_POINT_X = 30.00
-LAUNCH_POINT_Y = 30.00
-
 class MainWidget(QtWidgets.QMainWindow): #Main Class
     def __init__(self):
         super(MainWidget, self).__init__()
@@ -67,34 +64,17 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.mainWindowUI.tabButton3.clicked.connect(lambda x: self.tabSwitching(5))
         self.mainWindowUI.tabButton4.clicked.connect(lambda x: self.tabSwitching(6))
 
-        """
         self.mainWindowUI.buttonZoomIn.clicked.connect(lambda x: self.mapZoom(1))
         self.mainWindowUI.buttonZoomOut.clicked.connect(lambda x: self.mapZoom(2))
-        
+
         self.mainWindowUI.buttonPanLeft.clicked.connect(lambda x: self.mapPan(1))
         self.mainWindowUI.buttonPanRight.clicked.connect(lambda x: self.mapPan(2))
         self.mainWindowUI.buttonPanUp.clicked.connect(lambda x: self.mapPan(3))
         self.mainWindowUI.buttonPanDown.clicked.connect(lambda x: self.mapPan(4))
-        """
 
-    """
-    def keyPressEvent(self, event):
-        match(event.text()):
-            case "w":
-                self.mapPan(1)
-            case "a":
-                self.mapPan(2)
-            case "d":
-                self.mapPan(3)
-            case "s":
-                self.mapPan(4)              
-            case _:
-                #print (event.text())
-                return
-    """
-
-
+    
     #Slots 
+        
     @QtCore.Slot()    
     def mapZoom(self, zoomlevel):
         self.Map.mapZoom(zoomlevel, self.DataSet)
@@ -108,7 +88,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
     @QtCore.Slot() #Tab switching
     def tabSwitching(self, tabNum):
         self.DataSet.currentGraphTab = tabNum
-        #print (tabNum) #debug 
+        print (tabNum) #debug 
         self.mainWindowUI.StackedGraphs.setCurrentIndex(tabNum - 3)
 
     @QtCore.Slot()
@@ -137,13 +117,9 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                     
                     #print (str(self.DataSet.InternalData[0][i]) + "," + str(self.DataSet.InternalData[1][i])) #debug
 
-                    self.mainWindowUI.label1.setText("Current Timestamp: " + str(self.DataSet.InternalData[2][i]) + " Seconds")
-                    self.mainWindowUI.label2.setText("Accelerometer X: " + str(self.DataSet.InternalData[5][i]))
-                    self.mainWindowUI.label3.setText("Accelerometer Y: " + str(self.DataSet.InternalData[6][i]))
-                    self.mainWindowUI.label4.setText("Accelerometer Z: " + str(self.DataSet.InternalData[5][i]))
-                    self.mainWindowUI.label5.setText("Pressure: " + str(self.DataSet.InternalData[5][i]))
-                    self.mainWindowUI.label6.setText("Temperature: " + str(self.DataSet.InternalData[6][i]))
-                    
+                    self.mainWindowUI.label1.setText("Accelerometer X:" + str(self.DataSet.InternalData[7][i]))
+                    self.mainWindowUI.label2.setText("Accelerometer Y:" + str(self.DataSet.InternalData[8][i]))
+                    self.mainWindowUI.label3.setText("Accelerometer Z:" + str(self.DataSet.InternalData[9][i]))
 
                     self.DataSet.maprunning = False
 
@@ -218,14 +194,25 @@ class Matplot(Graph):
     def redrawGraph (self, DataSet):
         i = DataSet.latestElement - 1
 
+        self.axes.plot(float(DataSet.InternalData[2]), float(float(DataSet.InternalData[DataSet.currentGraphTab]), color='green', marker='o', linestyle='dashed',linewidth=2))
+
+        """
         for x in range (DataSet.latestElement - 1):
-            self.axes.scatter(float(DataSet.InternalData[2][x]), float(DataSet.InternalData[DataSet.currentGraphTab][x]))
+            newlistX = []
+            newlistX.append(DataSet.InternalData[2][x])
+            newlistY = []
+            newlistY.append(DataSet.InternalData[DataSet.currentGraphTab][x])
+
+            #self.axes.plot(float(DataSet.InternalData[2][x]), float(DataSet.InternalData[DataSet.currentGraphTab][x]), color='green', marker='o', linestyle='dashed',linewidth=2)
+
+            self.axes.plot(float(newlistX), float(newlistY), color='green', marker='o', linestyle='dashed',linewidth=2)
+        """
 
     def plotPoint (self, DataSet, graphIndex):
         i = DataSet.latestElement - 1
 
         if (DataSet.tolerance(graphIndex) == False):
-            self.axes.scatter(float(DataSet.InternalData[2][i]), float(DataSet.InternalData[self.graphIndex][i]) )
+            self.axes.plot(float(DataSet.InternalData[2][i]), float(DataSet.InternalData[self.graphIndex][i]), color='green', marker='o', linestyle='dashed',linewidth=2)
             self.draw()
 
 class Map(Graph):
@@ -263,7 +250,6 @@ class Map(Graph):
         self.axes.add_feature(cfeature.BORDERS)
 
     def mapPlotting(self):
-        BASE_EXTENTS = 1
         self.figure.clear()
 
         base_lat, base_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement]), float(self.DataSet.InternalData[1][self.DataSet.latestElement])  #-79.38 , 43.65
@@ -272,34 +258,23 @@ class Map(Graph):
         self.initMap()
         self.mapZoom()
 
-        self.axes.set_extent([base_lat - BASE_EXTENTS * self.zoomScale ,base_lat + BASE_EXTENTS * self.zoomScale ,base_long - BASE_EXTENTS * self.zoomScale, base_long + BASE_EXTENTS * self.zoomScale]) # Zoom Scale
+        self.axes.set_extent([base_lat - self.zoomScale ,base_lat + self.zoomScale ,base_long - self.zoomScale, base_long + self.zoomScale]) # Zoom Scale
 
         self.axes.plot (base_lat , base_long, color = 'blue', linewidth = '2', marker= 'o' ) #Rocket
         self.axes.plot ((self.pan_lat) ,(self.pan_long), color = 'red', linewidth = '3', marker= 'x')  #Map Focus Point
-        self.axes.plot (LAUNCH_POINT_X , LAUNCH_POINT_Y, color = 'red', linewidth = '2', marker= 'o') #Launch Point
-        self.axes.text (LAUNCH_POINT_X , LAUNCH_POINT_Y ,"Launch Point") #Launch Point Text Marker
-
-        #print (self.DataSet.InternalData[0][1])
+        self.axes.plot (-79.38 , 43.65, color = 'red', linewidth = '2', marker= 'o') #Launch Point
+        self.axes.text (-79.48 , 43.75 ,"Launch Point")
 
     def mapZoom(self):
-        
-        """
-        self.zoomScale = ((LAUNCH_POINT_Y - (self.DataSet.InternalData[0][self.DataSet.latestElement])) + 1)
-        self.zoomScale = abs(self.zoomScale)
-        self.zoomScale += ((self.DataSet.InternalData[0][self.DataSet.latestElement]) - LAUNCH_POINT_X + 1)
-        self.zoomScale = abs(self.zoomScale)
-        """
-        
-        self.zoomScale = max((self.DataSet.InternalData[0][self.DataSet.latestElement]) - LAUNCH_POINT_X + 1, (LAUNCH_POINT_Y - (self.DataSet.InternalData[0][self.DataSet.latestElement])) + 1)
-        self.zoomScale = abs(self.zoomScale)
-        
 
-        #print(str(self.DataSet.InternalData[1][1])  + ", " + str(self.DataSet.InternalData[0][self.DataSet.latestElement]))
-
-        #print("zoom scale: " + str(self.zoomScale))
+        self.zoomScale = ((-79.48 - (self.DataSet.InternalData[0][self.DataSet.latestElement]))  + 0.5)
+        self.zoomScale = abs(self.zoomScale)
+        
+        #print (self.zoomScale)
 
 
     def mapPan(self, panType, dataSet):
+
         if (dataSet.maprunning == True):
             return 
         

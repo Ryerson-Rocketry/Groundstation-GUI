@@ -1,14 +1,13 @@
 import time
-import time
 import time as t
 import serial
-import keyboard 
+#import keyboard 
 
 #for testing with radio
 def test():
-    port = "COM3"
+    port = "COM5"
 
-    baud  = 115200 
+    baud  = 57600 
     ####    initilization    ####
     i =0 
     count = 0
@@ -46,7 +45,7 @@ def test():
             print("no data in")
             
         else:
-            print ("A")
+            print (data_str)
             populateFile(data_str)
             #data_str= data_str.split('\n')
             #print("data is %s " % data_str[0])
@@ -85,7 +84,7 @@ def test():
 
         
 #for testing WITH the radio
-"""
+
 def populateFile(data_str):
 
     with open('dateUpdate.txt', "a") as f, open('data.txt', "r") as f1:
@@ -96,14 +95,15 @@ def populateFile(data_str):
 
             time.sleep(1)
     f.close()
-"""
+
 
 
 
 #for testing with preset dataset WITHOUT the radio
-
+"""
 def populateFile():
 
+    #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
     with open('dateUpdate.txt', "w") as f, open('datainvalids.txt', "r") as f1:
         
 
@@ -114,7 +114,10 @@ def populateFile():
             f.flush()
 
             time.sleep(1)
+"""
 
+
+test()
             
 
-populateFile()
+#populateFile()
