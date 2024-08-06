@@ -96,6 +96,8 @@ def populateFile(data_str):
             time.sleep(1)
     f.close()
 
+test()
+
 
 
 
@@ -114,10 +116,8 @@ def populateFile():
             f.flush()
 
             time.sleep(1)
+
+populateFile()
 """
-
-
-test()
             
 
-#populateFile()

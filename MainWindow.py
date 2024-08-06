@@ -21,30 +21,26 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Graph
 #Custom Classes/Functions
 import DataRead
 
-class mainWindowUI(object):
+from Components import text_readout
 
+GRAPH_SIZE_WIDTH = 1000
+GRAPH_SIZE_HEIGHT = 100
+
+class mainWindowUI(object):
 
     def setup(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
 
-        self.label1 = QtWidgets.QLabel()
-        self.label1.setText("Accelerometer X-Axis: 0")
-        self.label2 = QtWidgets.QLabel()
-        self.label2.setText("Accelerometer Y-Axis: 0")
-        self.label3 = QtWidgets.QLabel()
-        self.label3.setText("Accelerometer Z-Axis: 0")
-        self.label4 = QtWidgets.QLabel()
-        self.label4.setText("drx")
+        #UI module setup
+        self.text_readout_module = text_readout.TextReadoutUI()
+        self.text_readout_module.setup(self)
 
         self.buttonLeft = QtWidgets.QPushButton()
         self.buttonLeft.setText("Start")
 
         self.buttonZoomIn = Button("+")
         self.buttonZoomOut = Button("-")
-
-        self.buttonLeft = QtWidgets.QPushButton()
-        self.buttonLeft.setText("Start")
 
         self.buttonZoomIn = Button("+")
         self.buttonZoomOut = Button("-")
@@ -76,18 +72,12 @@ class mainWindowUI(object):
 
         for i in range(len(MainWindow.dataPlots)):
             self.StackedGraphs.addWidget(MainWindow.dataPlots[i])
+            MainWindow.dataPlots[i].resize(PySide6.QtCore.QSize(GRAPH_SIZE_WIDTH,GRAPH_SIZE_HEIGHT))
 
         self.dataLayout.addLayout(self.StackedGraphs, 2, 0, 1 , 4) 
-        
-        dataChildLayout = QtWidgets.QVBoxLayout()
-        
-        dataChildLayout.addWidget(self.label1) 
-        dataChildLayout.addWidget(self.label2)
-        dataChildLayout.addWidget(self.label3)
-        dataChildLayout.addWidget(self.label4)
 
         self.dataLayout.addLayout(tabLayout,1,0)
-        self.dataLayout.addLayout(dataChildLayout,3,0)
+        self.dataLayout.addLayout(self.text_readout_module.text_readout_layout,3,0)
         self.dataLayout.addWidget(self.buttonLeft, 4 ,0)
         self.dataLayout.addWidget(self.threadUseButton, 4, 1)
         self.dataLayout.addWidget(self.buttonMapFocus, 4, 2)

@@ -7,23 +7,23 @@ class DataTrack:
         self.InternalData = []
 
         #Data
-        self.x = [0]
-        self.y = [0]
-        self.time = [0]
+        self.x = []
+        self.y = []
+        self.time = []
 
-        self.pressure = [0]
-        self.temperature = [0]
-        self.signalStrength = [0]
-        self.batteryVoltage = [0]
-        self.accelerometerX = [0]
-        self.accelerometerY = [0]
-        self.accelerometerZ = [0]
+        self.pressure = []
+        self.signalStrength = []
+        self.temperature = []
+        self.batteryVoltage = []
+        self.accelerometerX = []
+        self.accelerometerY = []
+        self.accelerometerZ = []
 
         #FIX
         self.ignoreDataElements = []
 
         #persistence tracking
-        self.latestElement = 0
+        self.latestElement = -1
         self.currentGraphTab = 3
         self.currentTime = 0
         self.maprunning  = False #prevents the map from freezing upon a mapping library error
@@ -39,9 +39,20 @@ class DataTrack:
             9:"Accelerometer Z",
         }
 
+        self.graph_dict_units = {
+            2:"Sec",
+            3:"Psi",
+            4:"C",
+            5:"dB",
+            6:"V",
+            7:"M/s^2",
+            8:"M/s^2",
+            9:"M/s^2",
+        }
+
         #appends the 1D arrays for the individual components for the coordinates to the 2D array that encompasses both
         self.InternalData.append(self.x), self.InternalData.append(self.y), self.InternalData.append(self.time), 
-        self.InternalData.append(self.pressure), self.InternalData.append(self.signalStrength), self.InternalData.append(self.temperature), self.InternalData.append(self.batteryVoltage)
+        self.InternalData.append(self.pressure), self.InternalData.append(self.temperature), self.InternalData.append(self.signalStrength), self.InternalData.append(self.batteryVoltage)
         self.InternalData.append(self.accelerometerX), self.InternalData.append(self.accelerometerY), self.InternalData.append(self.accelerometerZ)
 
 
@@ -107,7 +118,6 @@ def FileReadSequential(Dataset):
         Dataset.x.insert(lastLine,float(SplitArray[7])) 
         Dataset.y.insert(lastLine,float(SplitArray[8]))
         Dataset.time.insert(lastLine,float(SplitArray[0])) 
-
 
         Dataset.pressure.insert(lastLine,float(SplitArray[6]))
         Dataset.signalStrength.insert(lastLine,float(SplitArray[0]))
