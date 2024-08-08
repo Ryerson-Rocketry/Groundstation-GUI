@@ -6,35 +6,34 @@ import PySide6.QtWidgets
 import time
 import numpy
 
-#Map dependency
-from matplotlib import pyplot as plt
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-import scipy #unused
-
-#Graph dependency
-from matplotlib.figure import Figure
-
-#For handling backend use of matplotlib
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Graph
 
 #Custom Classes/Functions
 import DataRead
 
 from Components import text_readout
+from Components import graph_display
+
+from Pages import header_tab as tabpage
+from Pages import graph_page as graphpage
+
+
 
 GRAPH_SIZE_WIDTH = 1000
 GRAPH_SIZE_HEIGHT = 100
 
-class mainWindowUI(object):
-
-    def setup(self, MainWindow):
-        if not MainWindow.objectName():
-            MainWindow.setObjectName(u"MainWindow")
+class mainWindowUI(QtCore.QObject):
+    def __init__(self, mainGUI):
+        super().__init__()
+        self.mainGUI = mainGUI
 
         #UI module setup
         self.text_readout_module = text_readout.TextReadoutUI()
         self.text_readout_module.setup(self)
+        self.graph_display_module = graph_display.GraphDisplayUI(self)
+
+        self.header_tab_module = tabpage.HeaderTabUI()
+        self.graph_page_module = graphpage.GraphPageUI(self)
+        #UI module setup
 
         self.buttonLeft = QtWidgets.QPushButton()
         self.buttonLeft.setText("Start")
@@ -68,29 +67,47 @@ class mainWindowUI(object):
 
         #creates an object for a grid type window layout, above objects can be added to the layout
         self.dataLayout = QtWidgets.QGridLayout() 
+
+        self.overall_layout_container = QtWidgets.QWidget()
+        self.overall_layout = QtWidgets.QGridLayout(self.overall_layout_container)
+
         self.StackedGraphs = QtWidgets.QStackedLayout()
 
-        for i in range(len(MainWindow.dataPlots)):
-            self.StackedGraphs.addWidget(MainWindow.dataPlots[i])
-            MainWindow.dataPlots[i].resize(PySide6.QtCore.QSize(GRAPH_SIZE_WIDTH,GRAPH_SIZE_HEIGHT))
+        for i in range(len(mainGUI.dataPlots)):
+            self.StackedGraphs.addWidget(mainGUI.dataPlots[i])
+            mainGUI.dataPlots[i].resize(PySide6.QtCore.QSize(GRAPH_SIZE_WIDTH,GRAPH_SIZE_HEIGHT))
 
         self.dataLayout.addLayout(self.StackedGraphs, 2, 0, 1 , 4) 
-
         self.dataLayout.addLayout(tabLayout,1,0)
         self.dataLayout.addLayout(self.text_readout_module.text_readout_layout,3,0)
         self.dataLayout.addWidget(self.buttonLeft, 4 ,0)
         self.dataLayout.addWidget(self.threadUseButton, 4, 1)
         self.dataLayout.addWidget(self.buttonMapFocus, 4, 2)
 
-        self.layoutMain = QtWidgets.QGridLayout()
-        self.layoutMain.addWidget(MainWindow.Map, 0,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
-        self.layoutMain.addWidget(self.buttonZoomIn, 9,0,1,1)
-        self.layoutMain.addWidget(self.buttonZoomOut, 9,2,1,1)
-        self.layoutMain.addWidget(self.buttonPanLeft, 10,0,1,1)
-        self.layoutMain.addWidget(self.buttonPanRight, 10,2,1,1)
-        self.layoutMain.addWidget(self.buttonPanUp, 9,1,1,1)
-        self.layoutMain.addWidget(self.buttonPanDown, 10,1,1,1)
-        self.layoutMain.addLayout(self.dataLayout, 1, 3, 1, 2)
+        self.overall_layout.addWidget(mainGUI.Map, 1,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
+        self.overall_layout.addWidget(self.buttonZoomIn, 9,0,1,1)
+        self.overall_layout.addWidget(self.buttonZoomOut, 9,2,1,1)
+        self.overall_layout.addWidget(self.buttonPanLeft, 10,0,1,1)
+        self.overall_layout.addWidget(self.buttonPanRight, 10,2,1,1)
+        self.overall_layout.addWidget(self.buttonPanUp, 9,1,1,1)
+        self.overall_layout.addWidget(self.buttonPanDown, 10,1,1,1)
+        self.overall_layout.addLayout(self.dataLayout, 1, 3, 1, 2)
+
+        self.main_layout = QtWidgets.QVBoxLayout()
+
+        self.stacked_page_layout = QtWidgets.QStackedLayout()
+        self.stacked_page_layout.addWidget(self.overall_layout_container)
+        self.stacked_page_layout.addWidget(self.graph_page_module.graph_page_layout_container)
+
+        self.main_layout.addWidget(self.header_tab_module.tab_layout_container)
+        self.main_layout.addLayout(self.stacked_page_layout)
+
+        self.header_tab_module.send_signal.connect(self.change_pages)
+
+    @QtCore.Slot()
+    def change_pages(self, value):
+        self.stacked_page_layout.setCurrentIndex(value)
+
 
 class Button (QtWidgets.QPushButton):
     def __init__(self, text):

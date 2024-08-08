@@ -3,8 +3,9 @@ from PySide6 import QtCore, QtWidgets, QtGui
 import PySide6.QtCore
 import PySide6.QtWidgets
 
-class TextReadoutUI(object):
 
+
+class TextReadoutUI(QtCore.QObject):
     def setup(self, TextReadout):
         self.label1 = QtWidgets.QLabel()
         self.label1.setText("Accelerometer X-Axis: 0")
@@ -13,7 +14,8 @@ class TextReadoutUI(object):
         self.label3 = QtWidgets.QLabel()
         self.label3.setText("Accelerometer Z-Axis: 0")
 
-        self.text_readout_layout = QtWidgets.QVBoxLayout()
+        self.text_readout_layout_container = QtWidgets.QWidget()
+        self.text_readout_layout = QtWidgets.QVBoxLayout(self.text_readout_layout_container)
         
         self.text_readout_layout.addWidget(self.label1) 
         self.text_readout_layout.addWidget(self.label2)

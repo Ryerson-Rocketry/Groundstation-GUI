@@ -84,7 +84,7 @@ def test():
 
         
 #for testing WITH the radio
-
+"""
 def populateFile(data_str):
 
     with open('dateUpdate.txt', "a") as f, open('data.txt', "r") as f1:
@@ -97,12 +97,12 @@ def populateFile(data_str):
     f.close()
 
 test()
-
+"""
 
 
 
 #for testing with preset dataset WITHOUT the radio
-"""
+
 def populateFile():
 
     #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
@@ -118,6 +118,6 @@ def populateFile():
             time.sleep(1)
 
 populateFile()
-"""
+
             
 
