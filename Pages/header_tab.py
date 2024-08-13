@@ -9,15 +9,15 @@ class HeaderTabUI(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self.graph_button = Button("Graph")
-        self.map_button = Button("Map")        
         self.full_view_button = Button("Full View")
+        self.map_button = Button("Map")  
 
         self.tab_layout_container = QtWidgets.QWidget()
         self.tab_layout = QtWidgets.QHBoxLayout(self.tab_layout_container)
 
         self.tab_layout.addWidget(self.full_view_button)
         self.tab_layout.addWidget(self.graph_button) 
-        self.tab_layout.addWidget(self.map_button)
+        #self.tab_layout.addWidget(self.map_button)
 
         self.full_view_button.clicked.connect (lambda x: self.send_page_layout_index(0))
         self.graph_button.clicked.connect (lambda x: self.send_page_layout_index(1))

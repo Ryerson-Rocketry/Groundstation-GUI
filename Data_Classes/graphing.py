@@ -28,8 +28,6 @@ class Matplot(Graph):
         self.y_string = ""
         self.title_string = ""
 
-
-
     #Defines graph axes
     def InitGraph (self, xlabel, ylabel, title, graph_index):
         self.x_string = xlabel
@@ -111,7 +109,6 @@ class Map(Graph):
     def mapZoom(self):
         self.zoomScale = max((self.DataSet.InternalData[0][self.DataSet.latestElement]) - LAUNCH_POINT_X + 1, (LAUNCH_POINT_Y - (self.DataSet.InternalData[0][self.DataSet.latestElement])) + 1)
         self.zoomScale = abs(self.zoomScale)
-        
         #print (self.zoomScale)
 
 

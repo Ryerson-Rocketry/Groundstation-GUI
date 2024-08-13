@@ -12,7 +12,6 @@ class DataTrack:
         self.time = []
 
         self.pressure = []
-        self.signalStrength = []
         self.temperature = []
         self.batteryVoltage = []
         self.accelerometerX = []
@@ -24,7 +23,6 @@ class DataTrack:
 
         #persistence tracking
         self.latestElement = -1
-        self.currentGraphTab = 3
         self.currentTime = 0
         self.maprunning  = False #prevents the map from freezing upon a mapping library error
 
@@ -32,27 +30,25 @@ class DataTrack:
             2:"Time",
             3:"Pressure",
             4:"Temperature",
-            5:"Signal Strength",
-            6:"Battery Voltage",
-            7:"Accelerometer X",
-            8:"Accelerometer Y",
-            9:"Accelerometer Z",
+            5:"Battery Voltage",
+            6:"Accelerometer X",
+            7:"Accelerometer Y",
+            8:"Accelerometer Z",
         }
 
         self.graph_dict_units = {
             2:"Sec",
             3:"Psi",
             4:"C",
-            5:"dB",
-            6:"V",
+            5:"mV",
+            6:"M/s^2",
             7:"M/s^2",
             8:"M/s^2",
-            9:"M/s^2",
         }
 
         #appends the 1D arrays for the individual components for the coordinates to the 2D array that encompasses both
         self.InternalData.append(self.x), self.InternalData.append(self.y), self.InternalData.append(self.time), 
-        self.InternalData.append(self.pressure), self.InternalData.append(self.temperature), self.InternalData.append(self.signalStrength), self.InternalData.append(self.batteryVoltage)
+        self.InternalData.append(self.pressure), self.InternalData.append(self.temperature), self.InternalData.append(self.batteryVoltage)
         self.InternalData.append(self.accelerometerX), self.InternalData.append(self.accelerometerY), self.InternalData.append(self.accelerometerZ)
 
 
@@ -120,7 +116,6 @@ def FileReadSequential(Dataset):
         Dataset.time.insert(lastLine,float(SplitArray[0])) 
 
         Dataset.pressure.insert(lastLine,float(SplitArray[6]))
-        Dataset.signalStrength.insert(lastLine,float(SplitArray[0]))
         Dataset.batteryVoltage.insert(lastLine,float(SplitArray[1]))
         Dataset.temperature.insert(lastLine,float(SplitArray[5]))
         Dataset.accelerometerX.insert(lastLine, float(SplitArray[2]))

@@ -27,8 +27,8 @@ class mainWindowUI(QtCore.QObject):
         self.mainGUI = mainGUI
 
         #UI module setup
-        self.text_readout_module = text_readout.TextReadoutUI()
-        self.text_readout_module.setup(self)
+        self.text_readout_module = text_readout.TextReadoutUI(self)
+
         self.graph_display_module = graph_display.GraphDisplayUI(self)
 
         self.header_tab_module = tabpage.HeaderTabUI()
@@ -53,17 +53,13 @@ class mainWindowUI(QtCore.QObject):
 
         self.tabButton1 = Button("Pressure:")
         self.tabButton2 = Button("Temperature:")
-        self.tabButton3 = Button("Signal Strength:")
-        self.tabButton4 = Button("Battery Voltage:")
-
-        self.threadUseButton = Button("Time")
+        self.tabButton3 = Button("Battery Voltage:")
         
         #Layouts ---
         tabLayout = QtWidgets.QHBoxLayout()
         tabLayout.addWidget(self.tabButton1)
         tabLayout.addWidget(self.tabButton2)
         tabLayout.addWidget(self.tabButton3)
-        tabLayout.addWidget(self.tabButton4)
 
         #creates an object for a grid type window layout, above objects can be added to the layout
         self.dataLayout = QtWidgets.QGridLayout() 
@@ -79,18 +75,19 @@ class mainWindowUI(QtCore.QObject):
 
         self.dataLayout.addLayout(self.StackedGraphs, 2, 0, 1 , 4) 
         self.dataLayout.addLayout(tabLayout,1,0)
-        self.dataLayout.addLayout(self.text_readout_module.text_readout_layout,3,0)
+        self.dataLayout.addWidget(self.text_readout_module.text_readout_layout_container , 3, 0)
         self.dataLayout.addWidget(self.buttonLeft, 4 ,0)
-        self.dataLayout.addWidget(self.threadUseButton, 4, 1)
-        self.dataLayout.addWidget(self.buttonMapFocus, 4, 2)
+        #self.dataLayout.addWidget(self.buttonMapFocus, 4, 1)
 
         self.overall_layout.addWidget(mainGUI.Map, 1,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
+        """
         self.overall_layout.addWidget(self.buttonZoomIn, 9,0,1,1)
         self.overall_layout.addWidget(self.buttonZoomOut, 9,2,1,1)
         self.overall_layout.addWidget(self.buttonPanLeft, 10,0,1,1)
         self.overall_layout.addWidget(self.buttonPanRight, 10,2,1,1)
         self.overall_layout.addWidget(self.buttonPanUp, 9,1,1,1)
         self.overall_layout.addWidget(self.buttonPanDown, 10,1,1,1)
+        """
         self.overall_layout.addLayout(self.dataLayout, 1, 3, 1, 2)
 
         self.main_layout = QtWidgets.QVBoxLayout()

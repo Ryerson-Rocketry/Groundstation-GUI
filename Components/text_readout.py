@@ -6,7 +6,8 @@ import PySide6.QtWidgets
 
 
 class TextReadoutUI(QtCore.QObject):
-    def setup(self, TextReadout):
+    def __init__(self, mainWindow):
+        super().__init__()
         self.label1 = QtWidgets.QLabel()
         self.label1.setText("Accelerometer X-Axis: 0")
         self.label2 = QtWidgets.QLabel()

@@ -13,6 +13,8 @@ import MainWindow
 
 from Data_Classes import graphing
 
+
+
 LAUNCH_POINT_X = 0
 LAUNCH_POINT_Y = 0
 
@@ -30,7 +32,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
         self.dataPlots = []
         self.secondary_data_plots = []
-        for i in range(4):
+        for i in range(3):
             self.dataPlots.append(graphing.Matplot())
             self.dataPlots[i].InitGraph("Time (Sec)", self.DataSet.graphDict[i + 3] + " (" + self.DataSet.graph_dict_units[i + 3] + ")" , self.DataSet.graphDict[i + 3] + "-Time Graph", i)
             self.dataPlots[i].graphIndex = i+3
@@ -53,20 +55,20 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
         #Signals
         self.mainWindowUI.buttonLeft.clicked.connect(self.buttonLeftInteraction) 
-        self.mainWindowUI.threadUseButton.clicked.connect(self.threadUseCheck) 
 
         self.mainWindowUI.tabButton1.clicked.connect(lambda x: self.tabSwitching(0))
         self.mainWindowUI.tabButton2.clicked.connect(lambda x: self.tabSwitching(1))
         self.mainWindowUI.tabButton3.clicked.connect(lambda x: self.tabSwitching(2))
-        self.mainWindowUI.tabButton4.clicked.connect(lambda x: self.tabSwitching(3))
 
         self.mainWindowUI.buttonZoomIn.clicked.connect(lambda x: self.mapZoom(1))
         self.mainWindowUI.buttonZoomOut.clicked.connect(lambda x: self.mapZoom(2))
 
+        """
         self.mainWindowUI.buttonPanLeft.clicked.connect(lambda x: self.mapPan(1))
         self.mainWindowUI.buttonPanRight.clicked.connect(lambda x: self.mapPan(2))
         self.mainWindowUI.buttonPanUp.clicked.connect(lambda x: self.mapPan(3))
         self.mainWindowUI.buttonPanDown.clicked.connect(lambda x: self.mapPan(4))
+        """
 
     def keyPressEvent(self, event):
         match(event.text()):
@@ -96,16 +98,6 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
     @QtCore.Slot() #Tab switching
     def tabSwitching(self, tabNum):
         self.mainWindowUI.StackedGraphs.setCurrentIndex(tabNum)
-
-
-    @QtCore.Slot()
-    def threadUseCheck(self):
-        def execute():
-            self.DataSet.timeSync()
-            self.mainWindowUI.label4.setText("Current Time: " + str(self.DataSet.currentTime))
-
-        thread = WorkerThread(execute)
-        self.threadpool.start(thread)
     
     @QtCore.Slot()
     def buttonLeftInteraction(self):    
@@ -122,7 +114,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                     self.Map.draw()
                     
                     #print (str(self.DataSet.InternalData[0][i]) + "," + str(self.DataSet.InternalData[1][i])) #debug
-                    self.mainWindowUI.text_readout_module.set_readout_text(str(self.DataSet.InternalData[7][i]), str(self.DataSet.InternalData[8][i]), str(self.DataSet.InternalData[9][i]))
+                    self.mainWindowUI.text_readout_module.set_readout_text(str(self.DataSet.InternalData[6][i]), str(self.DataSet.InternalData[7][i]), str(self.DataSet.InternalData[8][i]))
 
                     self.DataSet.maprunning = False
 

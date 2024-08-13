@@ -4,7 +4,7 @@ import serial
 #import keyboard 
 
 #for testing with radio
-def test():
+def radiorun():
     port = "COM5"
 
     baud  = 57600 
@@ -46,7 +46,7 @@ def test():
             
         else:
             print (data_str)
-            populateFile(data_str)
+            populatefile(data_str)
             #data_str= data_str.split('\n')
             #print("data is %s " % data_str[0])
             #print("# bytes in wait: %d \n" % byteInWait)
@@ -84,8 +84,8 @@ def test():
 
         
 #for testing WITH the radio
-"""
-def populateFile(data_str):
+
+def populatefile(data_str):
 
     with open('dateUpdate.txt', "a") as f, open('data.txt', "r") as f1:
             
@@ -96,14 +96,13 @@ def populateFile(data_str):
             time.sleep(1)
     f.close()
 
-test()
-"""
+radiorun()
 
 
 
 #for testing with preset dataset WITHOUT the radio
-
-def populateFile():
+"""
+def populatefile():
 
     #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
     with open('dateUpdate.txt', "w") as f, open('datainvalids.txt', "r") as f1:
@@ -117,7 +116,6 @@ def populateFile():
 
             time.sleep(1)
 
-populateFile()
-
-            
+populatefile()
+"""
 
