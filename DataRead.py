@@ -102,14 +102,14 @@ def FileReadSequential(Dataset):
         try:
             Dataset.x.insert(lastLine,float(SplitArray[7])) 
             Dataset.y.insert(lastLine,float(SplitArray[8]))
-            Dataset.time.insert(lastLine,float(SplitArray[0])) 
-
+ 
             Dataset.pressure.insert(lastLine,round(float(SplitArray[6])))
             Dataset.batteryVoltage.insert(lastLine,float(SplitArray[1]))
             Dataset.temperature.insert(lastLine,float(SplitArray[5]))
             Dataset.accelerometerX.insert(lastLine, float(SplitArray[2]))
             Dataset.accelerometerY.insert(lastLine, float(SplitArray[3]))
             Dataset.accelerometerZ.insert(lastLine, float(SplitArray[4]))
+            Dataset.time.insert(lastLine,float(SplitArray[0]))
         except:
             print("error")
 
@@ -119,8 +119,6 @@ def FileReadSequential(Dataset):
         for x in range(len(Dataset.InternalData)):
             if (len(Dataset.InternalData[x]) != truelength):
                 Dataset.InternalData[x].pop()
-    
-                
 
 
         if ((len(CoordArrayList) - 1) > (Dataset.latestElement)):
