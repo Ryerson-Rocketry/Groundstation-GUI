@@ -95,22 +95,24 @@ def FileReadSequential(Dataset):
         SplitArray = CoordArrayList[lastLine].split(",") #splits each line into the individual x and y components and records it
         #print("Accel" + SplitArray[2] + SplitArray[3] + SplitArray[4])
         
-                
-        Dataset.x.insert(lastLine,float(SplitArray[7])) 
-        Dataset.y.insert(lastLine,float(SplitArray[8]))
-        Dataset.time.insert(lastLine,float(SplitArray[0])) 
+        try:
+            Dataset.x.insert(lastLine,float(SplitArray[7])) 
+            Dataset.y.insert(lastLine,float(SplitArray[8]))
+            Dataset.time.insert(lastLine,float(SplitArray[0])) 
 
-        Dataset.pressure.insert(lastLine,round(float(SplitArray[6])))
-        Dataset.batteryVoltage.insert(lastLine,float(SplitArray[1]))
-        Dataset.temperature.insert(lastLine,float(SplitArray[5]))
-        Dataset.accelerometerX.insert(lastLine, float(SplitArray[2]))
-        Dataset.accelerometerY.insert(lastLine, float(SplitArray[3]))
-        Dataset.accelerometerZ.insert(lastLine, float(SplitArray[4]))
+            Dataset.pressure.insert(lastLine,round(float(SplitArray[6])))
+            Dataset.batteryVoltage.insert(lastLine,float(SplitArray[1]))
+            Dataset.temperature.insert(lastLine,float(SplitArray[5]))
+            Dataset.accelerometerX.insert(lastLine, float(SplitArray[2]))
+            Dataset.accelerometerY.insert(lastLine, float(SplitArray[3]))
+            Dataset.accelerometerZ.insert(lastLine, float(SplitArray[4]))
+        except:
+            print("error")
 
         #error checking
         truelength = len(Dataset.time)
 
-        for x in  range(len(Dataset.InternalData)):
+        for x in range(len(Dataset.InternalData)):
             if (len(Dataset.InternalData[x]) != truelength):
                 Dataset.InternalData[x].pop()
     
