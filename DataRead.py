@@ -31,7 +31,7 @@ class DataTrack:
             3:"Pressure",
             4:"Temperature",
             5:"Battery Voltage",
-            6:"Accelerometer",
+            6:"Acceleration",
             7:"Accelerometer Y",
             8:"Accelerometer Z",
         }
@@ -50,6 +50,8 @@ class DataTrack:
         self.InternalData.append(self.x), self.InternalData.append(self.y), self.InternalData.append(self.time), 
         self.InternalData.append(self.pressure), self.InternalData.append(self.temperature), self.InternalData.append(self.batteryVoltage)
         self.InternalData.append(self.accelerometerX), self.InternalData.append(self.accelerometerY), self.InternalData.append(self.accelerometerZ)
+
+
 
 
     def tolerance(self, graphIndex): 
@@ -86,29 +88,12 @@ def FileReadSequential(Dataset):
     with open('dateUpdate.txt', "r") as f:
 
         CoordArrayList = f.readlines() #reads each line of the data file and splits it into a array list
-
         lastLine = len(CoordArrayList) - 1
 
         CoordArrayList[lastLine] = CoordArrayList[lastLine].strip("\n")
 
         SplitArray = CoordArrayList[lastLine].split(",") #splits each line into the individual x and y components and records it
         #print("Accel" + SplitArray[2] + SplitArray[3] + SplitArray[4])
-        
-        """
-        for i in SplitArray: #null and valid character detection
-
-            if (i == ""):
-                return False
-            
-            tempCheck = list(i)
-            for j in tempCheck:
-                if (((ord(j) < 48) or (ord(j) > 57))):
-                    if (ord(j) == 45) or (ord(j) == 32) or (ord(j) == 46):
-                        pass
-                    else:
-                        #print (str(ord(j)) + " failed")
-                        return False
-        """
         
                 
         Dataset.x.insert(lastLine,float(SplitArray[7])) 
@@ -121,6 +106,16 @@ def FileReadSequential(Dataset):
         Dataset.accelerometerX.insert(lastLine, float(SplitArray[2]))
         Dataset.accelerometerY.insert(lastLine, float(SplitArray[3]))
         Dataset.accelerometerZ.insert(lastLine, float(SplitArray[4]))
+
+        #error checking
+        truelength = len(Dataset.time)
+
+        for x in  range(len(Dataset.InternalData)):
+            if (len(Dataset.InternalData[x]) != truelength):
+                Dataset.InternalData[x].pop()
+    
+                
+
 
         if ((len(CoordArrayList) - 1) > (Dataset.latestElement)):
             Dataset.latestElement += 1

@@ -72,6 +72,7 @@ class Map(Graph):
         self.figure = plt.figure()
         self.canvas = Graph (self.figure)
         self.axe = self.figure.add_subplot(1,1,1, projection = ccrs.PlateCarree())
+        self.axe.ticklabel_format(style = 'plain', scilimits=(0,0))
 
         #self.fig, self.ax = plt.subplots(1,1,1, projection = ccrs.PlateCarree())
 

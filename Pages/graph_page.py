@@ -36,7 +36,7 @@ class GraphPageUI(QtCore.QObject):
         self.tabButton1.clicked.connect(lambda x: self.tabSwitching(0))
         self.tabButton2.clicked.connect(lambda x: self.tabSwitching(1))
         self.tabButton3.clicked.connect(lambda x: self.tabSwitching(2))
-        self.tabButton3.clicked.connect(lambda x: self.tabSwitching(3))
+        self.tabButton4.clicked.connect(lambda x: self.tabSwitching(3))
 
     @QtCore.Slot() #Tab switching
     def tabSwitching(self, tabNum):

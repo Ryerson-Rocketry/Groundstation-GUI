@@ -15,8 +15,8 @@ from Data_Classes import graphing
 
 
 
-LAUNCH_POINT_X = 0
-LAUNCH_POINT_Y = 0
+LAUNCH_POINT_X = 47
+LAUNCH_POINT_Y = 81
 
 class MainWidget(QtWidgets.QMainWindow): #Main Class
     def __init__(self):
@@ -136,7 +136,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                 while self.mapState == True: 
 
                     for i in range(len(self.dataPlots)): #Plots all graphs at once
-
+                        
                         self.dataPlots[i].plotPoint(self.DataSet, i)
                         self.secondary_data_plots[i].plotPoint(self.DataSet, i)
 
