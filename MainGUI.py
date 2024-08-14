@@ -99,9 +99,16 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
     @QtCore.Slot() #Tab switching
     def tabSwitching(self, tabNum):
         self.mainWindowUI.StackedGraphs.setCurrentIndex(tabNum)
+        
+        if (tabNum == 3):
+            self.mainWindowUI.text_readout_module.text_readout_layout_container.setVisible(True);
+        else:
+            self.mainWindowUI.text_readout_module.text_readout_layout_container.setVisible(False);
     
     @QtCore.Slot()
     def buttonLeftInteraction(self):    
+        self.mainWindowUI.buttonLeft.setText("Stop")
+
         def execute(): #map thread
             
             while True:

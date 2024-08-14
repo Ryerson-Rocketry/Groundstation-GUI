@@ -43,6 +43,12 @@ class GraphPageUI(QtCore.QObject):
         self.mainWindow.mainGUI.currentGraphTab = tabNum + 3
         self.secondary_stacked_graphs.setCurrentIndex(tabNum)
 
+        if (tabNum == 3):
+            self.mainWindow.text_readout_module.text_readout_layout_container.setVisible(True);
+        else:
+            self.mainWindow.text_readout_module.text_readout_layout_container.setVisible(False);
+        
+
         
 class Button (QtWidgets.QPushButton):
     def __init__(self, text):

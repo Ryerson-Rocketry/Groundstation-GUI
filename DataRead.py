@@ -115,7 +115,7 @@ def FileReadSequential(Dataset):
         Dataset.y.insert(lastLine,float(SplitArray[8]))
         Dataset.time.insert(lastLine,float(SplitArray[0])) 
 
-        Dataset.pressure.insert(lastLine,float(SplitArray[6]))
+        Dataset.pressure.insert(lastLine,round(float(SplitArray[6])))
         Dataset.batteryVoltage.insert(lastLine,float(SplitArray[1]))
         Dataset.temperature.insert(lastLine,float(SplitArray[5]))
         Dataset.accelerometerX.insert(lastLine, float(SplitArray[2]))

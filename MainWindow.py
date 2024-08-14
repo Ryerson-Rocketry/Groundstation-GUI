@@ -78,6 +78,8 @@ class mainWindowUI(QtCore.QObject):
         self.dataLayout.addLayout(self.StackedGraphs, 2, 0, 1 , 4) 
         self.dataLayout.addLayout(tabLayout,1,0)
         self.dataLayout.addWidget(self.text_readout_module.text_readout_layout_container , 3, 0)
+        self.text_readout_module.text_readout_layout_container.setVisible(False)
+
         self.dataLayout.addWidget(self.buttonLeft, 4 ,0)
         #self.dataLayout.addWidget(self.buttonMapFocus, 4, 1)
 
