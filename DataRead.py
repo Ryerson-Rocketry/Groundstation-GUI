@@ -95,6 +95,10 @@ def FileReadSequential(Dataset):
         SplitArray = CoordArrayList[lastLine].split(",") #splits each line into the individual x and y components and records it
         #print("Accel" + SplitArray[2] + SplitArray[3] + SplitArray[4])
         
+        for x in range(len(SplitArray)):
+            if SplitArray[x] == "":
+                return False
+
         try:
             Dataset.x.insert(lastLine,float(SplitArray[7])) 
             Dataset.y.insert(lastLine,float(SplitArray[8]))
