@@ -10,8 +10,8 @@ from matplotlib.figure import Figure
 #For handling backend use of matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as Graph
 
-LAUNCH_POINT_X = 0
-LAUNCH_POINT_Y = 0
+LAUNCH_POINT_X = 47
+LAUNCH_POINT_Y = 81
 
 class Matplot(Graph):
 
@@ -49,8 +49,15 @@ class Matplot(Graph):
             self.axes.set_ylabel(self.y_string)
             self.axes.set_title(self.title_string)
             
-            self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[self.graph_index]), marker='o', linewidth = 0.1, markersize = 2 )
-            self.draw()
+            if (graphIndex != 3):
+                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[self.graph_index]), marker='o', linewidth = 0.1, markersize = 2 )
+                self.draw()
+            else:
+                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[self.graph_index]), marker='o', linewidth = 0.1, markersize = 2 , label = 'x-axis' )
+                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[7]), marker='o', linewidth = 0.1, markersize = 2, label = 'y-axis' )
+                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[8]), marker='o', linewidth = 0.1, markersize = 2, label = 'z-axis' )
+                self.axes.legend()
+                self.draw()
         
 
 class Map(Graph):

@@ -54,12 +54,14 @@ class mainWindowUI(QtCore.QObject):
         self.tabButton1 = Button("Pressure:")
         self.tabButton2 = Button("Temperature:")
         self.tabButton3 = Button("Battery Voltage:")
+        self.tabButton4 = Button("Acceleration:")
         
         #Layouts ---
         tabLayout = QtWidgets.QHBoxLayout()
         tabLayout.addWidget(self.tabButton1)
         tabLayout.addWidget(self.tabButton2)
         tabLayout.addWidget(self.tabButton3)
+        tabLayout.addWidget(self.tabButton4)
 
         #creates an object for a grid type window layout, above objects can be added to the layout
         self.dataLayout = QtWidgets.QGridLayout() 

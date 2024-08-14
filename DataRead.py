@@ -31,7 +31,7 @@ class DataTrack:
             3:"Pressure",
             4:"Temperature",
             5:"Battery Voltage",
-            6:"Accelerometer X",
+            6:"Accelerometer",
             7:"Accelerometer Y",
             8:"Accelerometer Z",
         }

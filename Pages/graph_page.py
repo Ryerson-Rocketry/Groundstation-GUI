@@ -14,10 +14,12 @@ class GraphPageUI(QtCore.QObject):
         self.tabButton1 = Button("Pressure:")
         self.tabButton2 = Button("Temperature:")
         self.tabButton3 = Button("Battery Voltage:")
+        self.tabButton4 = Button("Acceleration:")
         
         self.graph_tab_header.addWidget(self.tabButton1)
         self.graph_tab_header.addWidget(self.tabButton2)
         self.graph_tab_header.addWidget(self.tabButton3)
+        self.graph_tab_header.addWidget(self.tabButton4)
 
         self.secondary_stacked_graphs = QtWidgets.QStackedLayout()
 
@@ -34,6 +36,7 @@ class GraphPageUI(QtCore.QObject):
         self.tabButton1.clicked.connect(lambda x: self.tabSwitching(0))
         self.tabButton2.clicked.connect(lambda x: self.tabSwitching(1))
         self.tabButton3.clicked.connect(lambda x: self.tabSwitching(2))
+        self.tabButton3.clicked.connect(lambda x: self.tabSwitching(3))
 
     @QtCore.Slot() #Tab switching
     def tabSwitching(self, tabNum):

@@ -32,7 +32,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
         self.dataPlots = []
         self.secondary_data_plots = []
-        for i in range(3):
+        for i in range(4):
             self.dataPlots.append(graphing.Matplot())
             self.dataPlots[i].InitGraph("Time (Sec)", self.DataSet.graphDict[i + 3] + " (" + self.DataSet.graph_dict_units[i + 3] + ")" , self.DataSet.graphDict[i + 3] + "-Time Graph", i)
             self.dataPlots[i].graphIndex = i+3
@@ -59,7 +59,8 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.mainWindowUI.tabButton1.clicked.connect(lambda x: self.tabSwitching(0))
         self.mainWindowUI.tabButton2.clicked.connect(lambda x: self.tabSwitching(1))
         self.mainWindowUI.tabButton3.clicked.connect(lambda x: self.tabSwitching(2))
-
+        self.mainWindowUI.tabButton4.clicked.connect(lambda x: self.tabSwitching(3))
+        
         self.mainWindowUI.buttonZoomIn.clicked.connect(lambda x: self.mapZoom(1))
         self.mainWindowUI.buttonZoomOut.clicked.connect(lambda x: self.mapZoom(2))
 
@@ -128,8 +129,10 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                 while self.mapState == True: 
 
                     for i in range(len(self.dataPlots)): #Plots all graphs at once
+
                         self.dataPlots[i].plotPoint(self.DataSet, i)
                         self.secondary_data_plots[i].plotPoint(self.DataSet, i)
+
 
                     self.mapState = False
 
