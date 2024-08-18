@@ -107,7 +107,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
     
     @QtCore.Slot()
     def buttonLeftInteraction(self):    
-        self.mainWindowUI.buttonLeft.setText("Stop")
+        self.mainWindowUI.buttonLeft.setText("Reboot")
 
         def execute(): #map thread
             

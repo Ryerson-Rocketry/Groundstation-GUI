@@ -97,7 +97,14 @@ def FileReadSequential(Dataset):
         
         for x in range(len(SplitArray)):
             if SplitArray[x] == "":
+                print("error null")
                 return False
+            
+        if  len(Dataset.InternalData[0]) > 2:
+            #print(str(SplitArray[0]) + ", " + str(Dataset.time[-2]))
+            if int(SplitArray[0]) == int(Dataset.time[-2]):
+                #print(str(SplitArray[0]) + ", " + str(Dataset.time[-2]))
+                return False;
 
         try:
             Dataset.x.insert(lastLine,float(SplitArray[7])) 
@@ -111,7 +118,7 @@ def FileReadSequential(Dataset):
             Dataset.accelerometerZ.insert(lastLine, float(SplitArray[4]))
             Dataset.time.insert(lastLine,float(SplitArray[0]))
         except:
-            print("error")
+            print("error" + "Problem inputline:" + str(lastLine))
 
         #error checking
         truelength = len(Dataset.time)
@@ -120,9 +127,10 @@ def FileReadSequential(Dataset):
             if (len(Dataset.InternalData[x]) != truelength):
                 Dataset.InternalData[x].pop()
 
+        print (str(len(Dataset.time)) + ", " + str(len(Dataset.pressure)) + ", " + str(len(Dataset.batteryVoltage)) + ", " + str(len(Dataset.temperature)) + ", " + str(len(Dataset.accelerometerX)) + ", ")
 
-        if ((len(CoordArrayList) - 1) > (Dataset.latestElement)):
-            Dataset.latestElement += 1
+        #if ((len(CoordArrayList) - 1) > (Dataset.latestElement)):
+        Dataset.latestElement = len(Dataset.time) - 1
 
         f.close()
 
