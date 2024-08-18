@@ -60,7 +60,7 @@ class Matplot(Graph):
                     self.axes.legend()
                     self.draw()
         except:
-            print ("Problem with plot point, likely x and y must have same dimensions error: " (DataSet.InternalData[2]))
+            print ("Problem with plot point, likely x and y must have same dimensions error: ")
             print (str(len(DataSet.time)) + ", " + str(len(DataSet.pressure)) + ", " + str(len(DataSet.batteryVoltage)) + ", " + str(len(DataSet.temperature)) + ", " + str(len(DataSet.accelerometerX)))
             
         

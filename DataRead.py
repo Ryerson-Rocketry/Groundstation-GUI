@@ -123,10 +123,11 @@ def FileReadSequential(Dataset):
         #error checking
         truelength = len(Dataset.time)
 
+        
         for x in range(len(Dataset.InternalData)):
             if (len(Dataset.InternalData[x]) != truelength):
                 Dataset.InternalData[x].pop()
-
+        
         print (str(len(Dataset.time)) + ", " + str(len(Dataset.pressure)) + ", " + str(len(Dataset.batteryVoltage)) + ", " + str(len(Dataset.temperature)) + ", " + str(len(Dataset.accelerometerX)) + ", ")
 
         #if ((len(CoordArrayList) - 1) > (Dataset.latestElement)):
