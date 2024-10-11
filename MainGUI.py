@@ -6,22 +6,24 @@ import PySide6.QtWidgets
 import time
 import numpy
 
-
 #Custom Classes/Functions
 import DataRead
 import MainWindow
 
+from populate import Populate
+
 from Data_Classes import graphing
-
-
 
 LAUNCH_POINT_X = 47
 LAUNCH_POINT_Y = 81
+
+DEBUG_MODE = True #should be true if running application WITHOUT the radio, false otherwise
 
 class MainWidget(QtWidgets.QMainWindow): #Main Class
     def __init__(self):
         super(MainWidget, self).__init__()
         
+        self.populate = Populate()
         self.threadpool = QtCore.QThreadPool()
 
         self.setWindowTitle("Rocketry Ground Station GUI")
@@ -121,8 +123,8 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                     self.Map.mapPlotting()
                     self.Map.draw()
                     
-                    #print (str(self.DataSet.InternalData[0][i]) + "," + str(self.DataSet.InternalData[1][i])) #debug
-                    self.mainWindowUI.text_readout_module.set_readout_text(str(self.DataSet.InternalData[6][i]), str(self.DataSet.InternalData[7][i]), str(self.DataSet.InternalData[8][i]))
+                    #print (str(self.DataSet.internaldata[0][i]) + "," + str(self.DataSet.internaldata[1][i])) #debug
+                    self.mainWindowUI.text_readout_module.set_readout_text(str(self.DataSet.internaldata[6][i]), str(self.DataSet.internaldata[7][i]), str(self.DataSet.internaldata[8][i]))
 
                     self.DataSet.maprunning = False
 
@@ -156,12 +158,20 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
                 time.sleep(0.1)
 
+        def executeradio():
+            if (DEBUG_MODE == True):
+                self.populate.populatefile()
+            else:
+                self.populate.populatefileradio()
+
+        thread4 = WorkerThread(executeradio) 
         thread = WorkerThread(execute)
         thread2 = WorkerThread(execute2) 
         thread3 = WorkerThread(execute3) 
         self.threadpool.start(thread)
         self.threadpool.start(thread2)
         self.threadpool.start(thread3)
+        self.threadpool.start(thread4)
 
 
         
