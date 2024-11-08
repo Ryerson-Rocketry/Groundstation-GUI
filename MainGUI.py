@@ -27,7 +27,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.threadpool = QtCore.QThreadPool()
 
         self.setWindowTitle("Rocketry Ground Station GUI")
-        self.resize(1800,800)
+        self.resize(1920,1000)
 
         #Graph & Map & Other Widget Class Init ---
         self.DataSet = DataRead.DataTrack()

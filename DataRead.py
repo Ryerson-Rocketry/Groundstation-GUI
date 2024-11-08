@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 
+
 class DataTrack:
     def __init__(self):
 
@@ -53,7 +54,7 @@ class DataTrack:
 
     def tolerance(self, graphIndex): 
         #print(self.latestElement)
-        if (self.latestElement == 0 or self.latestElement == 1):
+        if (self.latestElement > 0 ):
             return False #can't check previous data if there is none
         
         #previousTime = self.internaldata[2][self.latestElement-1], currentTime = self.internaldata[2][self.latestElement]
@@ -69,11 +70,11 @@ class DataTrack:
         deltaDistanceLong = previousLong - currentLong
         deltaTime = previousTime - currentTime
 
-        #Outlier Detection GPS
-        #if ((deltaDistanceLong / deltaTime) > 0.5):
-        #    return False
 
-        return False #placeholder
+        if (((deltaDistanceLong / deltaTime) > 1) or ((deltaDistanceLat / deltaTime) > 1)):
+            return False
+
+        return True
             
         
     def timeSync (self):

@@ -15,7 +15,7 @@ from Components import graph_display
 
 from Pages import header_tab as tabpage
 from Pages import graph_page as graphpage
-
+from Pages import map_tab as maptab
 
 
 GRAPH_SIZE_WIDTH = 1000
@@ -27,11 +27,14 @@ class mainWindowUI(QtCore.QObject):
         self.mainGUI = mainGUI
 
         #UI module setup
+        self.map_module = maptab.MapTabUI(self)
+        
         self.text_readout_module = text_readout.TextReadoutUI(self)
 
         self.graph_display_module = graph_display.GraphDisplayUI(self)
 
         self.header_tab_module = tabpage.HeaderTabUI()
+
         self.graph_page_module = graphpage.GraphPageUI(self)
         #UI module setup
 
@@ -83,7 +86,8 @@ class mainWindowUI(QtCore.QObject):
         self.dataLayout.addWidget(self.buttonLeft, 4 ,0)
         #self.dataLayout.addWidget(self.buttonMapFocus, 4, 1)
 
-        self.overall_layout.addWidget(mainGUI.Map, 1,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
+        #self.overall_layout.addWidget(self.mainGUI.Map, 1,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
+        self.overall_layout.addWidget(self.map_module.map_page_layout_container, 1,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
         """
         self.overall_layout.addWidget(self.buttonZoomIn, 9,0,1,1)
         self.overall_layout.addWidget(self.buttonZoomOut, 9,2,1,1)
