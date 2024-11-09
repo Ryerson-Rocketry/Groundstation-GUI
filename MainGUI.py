@@ -192,6 +192,8 @@ class WorkerThread(QtCore.QRunnable):
 
         
 if __name__ == "__main__":
+    print (PySide6.__version__)
+
     app = QtWidgets.QApplication([])
 
     MainWindow = MainWidget()

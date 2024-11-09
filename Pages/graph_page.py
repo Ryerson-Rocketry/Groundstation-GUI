@@ -24,7 +24,6 @@ class GraphPageUI(QtCore.QObject):
         self.secondary_stacked_graphs = QtWidgets.QStackedLayout()
 
         for i in range(len(mainWindow.mainGUI.dataPlots)):
-
             self.secondary_stacked_graphs.addWidget(mainWindow.mainGUI.secondary_data_plots[i])
 
         self.graph_page_layout_container = QtWidgets.QWidget()

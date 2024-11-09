@@ -41,23 +41,27 @@ class Matplot(Graph):
         self.graph_index = graph_index + 3
 
     def plotPoint (self, DataSet, graphIndex):
-        if (DataSet.tolerance(graphIndex) == False):
-            self.axes.clear()
-            
-            #axis labels and titles need to be readded after graphs are cleared
-            self.axes.set_xlabel(self.x_string)
-            self.axes.set_ylabel(self.y_string)
-            self.axes.set_title(self.title_string)
-            
-            if (graphIndex != 3):
-                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[self.graph_index]), marker='o', linewidth = 0.1, markersize = 2 )
-                self.draw()
-            else:
-                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[self.graph_index]), marker='o', linewidth = 0.1, markersize = 2 , label = 'x-axis' )
-                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[7]), marker='o', linewidth = 0.1, markersize = 2, label = 'y-axis' )
-                self.axes.plot((DataSet.InternalData[2]), (DataSet.InternalData[8]), marker='o', linewidth = 0.1, markersize = 2, label = 'z-axis' )
-                self.axes.legend()
-                self.draw()
+        try:
+            if (DataSet.tolerance(graphIndex) == False):
+                self.axes.clear()
+                
+                #axis labels and titles need to be readded after graphs are cleared
+                self.axes.set_xlabel(self.x_string)
+                self.axes.set_ylabel(self.y_string)
+                self.axes.set_title(self.title_string)
+                
+                if (graphIndex != 3):
+                    self.axes.plot((DataSet.internaldata[2]), (DataSet.internaldata[self.graph_index]), marker='o', linewidth = 0.1, markersize = 2 )
+                    self.draw()
+                else:
+                    self.axes.plot((DataSet.internaldata[2]), (DataSet.internaldata[self.graph_index]), marker='o', linewidth = 0.1, markersize = 2 , label = 'x-axis' )
+                    self.axes.plot((DataSet.internaldata[2]), (DataSet.internaldata[7]), marker='o', linewidth = 0.1, markersize = 2, label = 'y-axis' )
+                    self.axes.plot((DataSet.internaldata[2]), (DataSet.internaldata[8]), marker='o', linewidth = 0.1, markersize = 2, label = 'z-axis' )
+                    self.axes.legend()
+                    self.draw()
+        except:
+            print ("Problem with plot point, likely x and y must have same dimensions error: ")
+            print (str(len(DataSet.time)) + ", " + str(len(DataSet.pressure)) + ", " + str(len(DataSet.batteryVoltage)) + ", " + str(len(DataSet.temperature)) + ", " + str(len(DataSet.accelerometerX)))
         
 
 class Map(Graph):
@@ -99,8 +103,8 @@ class Map(Graph):
         self.figure.clear()
 
         try:
-            base_lat, base_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement]), float(self.DataSet.InternalData[1][self.DataSet.latestElement])  #-79.38 , 43.65
-            self.pan_lat, self.pan_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement]) + self.panLocation[0], float(self.DataSet.InternalData[1][self.DataSet.latestElement]) + self.panLocation[1] #updates the pan location relative to rocket
+            base_lat, base_long = float(self.DataSet.internaldata[0][self.DataSet.latestElement]), float(self.DataSet.internaldata[1][self.DataSet.latestElement])  #-79.38 , 43.65
+            self.pan_lat, self.pan_long = float(self.DataSet.internaldata[0][self.DataSet.latestElement]) + self.panLocation[0], float(self.DataSet.internaldata[1][self.DataSet.latestElement]) + self.panLocation[1] #updates the pan location relative to rocket
         except:
             return
         
@@ -115,7 +119,7 @@ class Map(Graph):
         self.axes.text (LAUNCH_POINT_X , LAUNCH_POINT_Y ,"Launch Point")
 
     def mapZoom(self):
-        self.zoomScale = max((self.DataSet.InternalData[0][self.DataSet.latestElement]) - LAUNCH_POINT_X + 1, (LAUNCH_POINT_Y - (self.DataSet.InternalData[0][self.DataSet.latestElement])) + 1)
+        self.zoomScale = max((self.DataSet.internaldata[0][self.DataSet.latestElement]) - LAUNCH_POINT_X + 1, (LAUNCH_POINT_Y - (self.DataSet.internaldata[0][self.DataSet.latestElement])) + 1)
         self.zoomScale = abs(self.zoomScale)
         #print (self.zoomScale)
 
@@ -138,8 +142,8 @@ class Map(Graph):
                 self.panLocation[1] = self.panLocation[1] - 0.5
 
         try:
-            base_lat, base_long =   float(self.DataSet.InternalData[0][self.DataSet.latestElement]), float(self.DataSet.InternalData[1][self.DataSet.latestElement])
-            self.pan_lat, self.pan_long = float(self.DataSet.InternalData[0][self.DataSet.latestElement] + self.panLocation[0]), float(self.DataSet.InternalData[1][self.DataSet.latestElement]  + self.panLocation[1])
+            base_lat, base_long =   float(self.DataSet.internaldata[0][self.DataSet.latestElement]), float(self.DataSet.internaldata[1][self.DataSet.latestElement])
+            self.pan_lat, self.pan_long = float(self.DataSet.internaldata[0][self.DataSet.latestElement] + self.panLocation[0]), float(self.DataSet.internaldata[1][self.DataSet.latestElement]  + self.panLocation[1])
         except:
             return
 
