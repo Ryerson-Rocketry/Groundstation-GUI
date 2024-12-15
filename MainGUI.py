@@ -124,7 +124,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                     self.Map.draw()
                     
                     #print (str(self.DataSet.internaldata[0][i]) + "," + str(self.DataSet.internaldata[1][i])) #debug
-                    self.mainWindowUI.text_readout_module.set_readout_text(str(self.DataSet.internaldata[6][i]), str(self.DataSet.internaldata[7][i]), str(self.DataSet.internaldata[8][i]))
+                    self.mainWindowUI.text_readout_module.set_readout_text(str(self.DataSet.data['accelerometerX'][i]), str(self.DataSet.data['accelerometerY'][i]), str(self.DataSet.data['accelerometerZ'][i]))
 
                     self.DataSet.maprunning = False
 
