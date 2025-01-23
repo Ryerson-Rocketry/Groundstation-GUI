@@ -17,11 +17,20 @@ from Pages import header_tab as tabpage
 from Pages import graph_page as graphpage
 from Pages import map_tab as maptab
 
-
+#Constant values for graph size
 GRAPH_SIZE_WIDTH = 1000
 GRAPH_SIZE_HEIGHT = 100
 
+
 class mainWindowUI(QtCore.QObject):
+    """
+    MainWindowUI contains all actual pyside widgets. \n
+    References mainGUI for data related widgets and other data functions. \n
+
+    Structure: 
+
+    """
+
     def __init__(self, mainGUI):
         super().__init__()
         self.mainGUI = mainGUI
@@ -37,7 +46,6 @@ class mainWindowUI(QtCore.QObject):
 
         self.graph_page_module = graphpage.GraphPageUI(self)
         #UI module setup
-
         self.buttonLeft = QtWidgets.QPushButton()
         self.buttonLeft.setText("Start")
 
@@ -72,6 +80,7 @@ class mainWindowUI(QtCore.QObject):
         self.overall_layout_container = QtWidgets.QWidget()
         self.overall_layout = QtWidgets.QGridLayout(self.overall_layout_container)
 
+        #
         self.StackedGraphs = QtWidgets.QStackedLayout()
 
         for i in range(len(mainGUI.dataPlots)):
@@ -88,6 +97,8 @@ class mainWindowUI(QtCore.QObject):
 
         #self.overall_layout.addWidget(self.mainGUI.Map, 1,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
         self.overall_layout.addWidget(self.map_module.map_page_layout_container, 1,0,8,3) #to be contained in cell row:0,column:0, spanning 8 row and 3 columns
+        
+        #not used, ignore
         """
         self.overall_layout.addWidget(self.buttonZoomIn, 9,0,1,1)
         self.overall_layout.addWidget(self.buttonZoomOut, 9,2,1,1)
@@ -96,6 +107,7 @@ class mainWindowUI(QtCore.QObject):
         self.overall_layout.addWidget(self.buttonPanUp, 9,1,1,1)
         self.overall_layout.addWidget(self.buttonPanDown, 10,1,1,1)
         """
+
         self.overall_layout.addLayout(self.dataLayout, 1, 3, 1, 2)
 
         self.main_layout = QtWidgets.QVBoxLayout()
@@ -114,6 +126,7 @@ class mainWindowUI(QtCore.QObject):
         self.stacked_page_layout.setCurrentIndex(value)
 
 
+#template class for button
 class Button (QtWidgets.QPushButton):
     def __init__(self, text):
         super(Button, self).__init__()

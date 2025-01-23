@@ -14,16 +14,21 @@ from populate import Populate
 
 from Data_Classes import graphing
 
-LAUNCH_POINT_X = 47
-LAUNCH_POINT_Y = 81
-
 DEBUG_MODE = True #should be true if running application WITHOUT the radio, false otherwise
 
-class MainWidget(QtWidgets.QMainWindow): #Main Class
+
+class MainWidget(QtWidgets.QMainWindow): 
+    """
+    Main Class/Widget. \n
+    Initializes data classes and the main window widget. \n
+
+    Contains some graphical widgets (graphs/maps) related to data output in the gui.
+    """
+
     def __init__(self):
         super(MainWidget, self).__init__()
         
-        self.populate = Populate()
+        self.populate = Populate()  
         self.threadpool = QtCore.QThreadPool()
 
         self.setWindowTitle("Rocketry Ground Station GUI")
@@ -48,7 +53,6 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.graphState = False
 
         #Graph & Map Class Init ---
-
         self.mainWindowUI = MainWindow.mainWindowUI(self)
     
         widget = QtWidgets.QWidget(self)
@@ -66,6 +70,7 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.mainWindowUI.buttonZoomIn.clicked.connect(lambda x: self.mapZoom(1))
         self.mainWindowUI.buttonZoomOut.clicked.connect(lambda x: self.mapZoom(2))
 
+        #unused ignore
         """
         self.mainWindowUI.buttonPanLeft.clicked.connect(lambda x: self.mapPan(1))
         self.mainWindowUI.buttonPanRight.clicked.connect(lambda x: self.mapPan(2))
@@ -73,7 +78,12 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
         self.mainWindowUI.buttonPanDown.clicked.connect(lambda x: self.mapPan(4))
         """
 
+
     def keyPressEvent(self, event):
+        """
+        Boilerplate function for keypress events
+        unused  
+        """     
         match(event.text()):
             case "w":
                 self.mapPan(1)
@@ -108,11 +118,15 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
             self.mainWindowUI.text_readout_module.text_readout_layout_container.setVisible(False);
     
     @QtCore.Slot()
-    def buttonLeftInteraction(self):    
+    def buttonLeftInteraction(self):
+
         self.mainWindowUI.buttonLeft.setText("Reboot")
 
-        def execute(): #map thread
-            
+        def thread_graph_write():
+            """
+            secondary loop for writing into graphs and the map.
+            Depends on execute2() to check for new data being available to actually graph/map
+            """    
             while True:
                 while self.graphState == True:
 
@@ -131,23 +145,23 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
                     self.graphState = False
                     self.mapState = True #tells the graph thread that it can plot
 
-                time.sleep(0.1)
-               
-        def execute2(): #graph thread (not needed?)
-            while True:
-                while self.mapState == True: 
+                    while self.mapState == True: 
 
-                    for i in range(len(self.dataPlots)): #Plots all graphs at once
-                        
-                        self.dataPlots[i].plotPoint(self.DataSet, i)
-                        self.secondary_data_plots[i].plotPoint(self.DataSet, i)
-
+                        for i in range(len(self.dataPlots)): #Plots all graphs at once
+                            
+                            self.dataPlots[i].plotPoint(self.DataSet, i)
+                            self.secondary_data_plots[i].plotPoint(self.DataSet, i)
 
                     self.mapState = False
 
                 time.sleep(0.1)
 
-        def execute3(): #new data element check
+
+
+        def thread_data_entry(): 
+            """
+            Main loop for adding new data into the GUI.  
+            """
             while True:
                 
                 DataRead.FileReadSequential(self.DataSet)
@@ -158,24 +172,26 @@ class MainWidget(QtWidgets.QMainWindow): #Main Class
 
                 time.sleep(0.1)
 
-        def executeradio():
+
+        def thread_radio():
+            '''
+            Initializes radio connection (or mock connection for debugging gui)
+            '''
             if (DEBUG_MODE == True):
                 self.populate.populatefile()
             else:
                 self.populate.populatefileradio()
-
-        thread4 = WorkerThread(executeradio) 
-        thread = WorkerThread(execute)
-        thread2 = WorkerThread(execute2) 
-        thread3 = WorkerThread(execute3) 
+        
+        thread = WorkerThread(thread_graph_write)
+        thread2 = WorkerThread(thread_data_entry) 
+        thread3 = WorkerThread(thread_radio) 
         self.threadpool.start(thread)
         self.threadpool.start(thread2)
         self.threadpool.start(thread3)
-        self.threadpool.start(thread4)
 
 
         
-#Multithreading
+#Multithreading functionality
 class WorkerThread(QtCore.QRunnable):
     def __init__(self, fn, *args, **kwargs):
         super(WorkerThread, self).__init__()
@@ -187,8 +203,6 @@ class WorkerThread(QtCore.QRunnable):
     @QtCore.Slot()  
     def run(self):
         self.fn(*self.args, **self.kwargs)
-
-
 
         
 if __name__ == "__main__":

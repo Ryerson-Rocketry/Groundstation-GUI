@@ -28,8 +28,13 @@ class Matplot(Graph):
         self.y_string = ""
         self.title_string = ""
 
-    #Defines graph axes
+
     def InitGraph (self, xlabel, ylabel, title, graph_index):
+        '''
+        Defines graph axes \n
+        note: graph_index + 3 used in function because the graph index should be shifted by 3 to account for time and x/y coordinates that won't be used 
+        '''
+            
         self.x_string = xlabel
         self.y_string = ylabel
         self.title_string = title
@@ -41,6 +46,9 @@ class Matplot(Graph):
         self.graph_index = graph_index + 3
 
     def plotPoint (self, DataSet, graphIndex):
+        '''
+        
+        '''
         try:
             if (DataSet.tolerance(graphIndex) == False):
                 self.axes.clear()
