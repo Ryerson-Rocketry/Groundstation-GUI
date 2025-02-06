@@ -1,0 +1,41 @@
+.home_header{
+    text-align: center;
+}
+
+.overall_container{
+    display: flexbox;
+    flex-flow: column;
+
+}
+
+.center_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 5%;
+
+    column-gap: 15px;
+    row-gap: 15px;
+    
+    margin-bottom: 0.5%;
+    margin-top: 2%;
+}
+
+.bottom_container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+
+}
+
+.graph_container{
+    display: grid;
+    grid-template-rows: 1fr 15fr;
+}
+
+.graph_button_row{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+
+.card{
+    background: linear-gradient(to right bottom,rgb(3, 3, 3),rgb(49, 49, 49))
+}
