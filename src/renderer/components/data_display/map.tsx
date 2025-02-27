@@ -16,12 +16,14 @@ import {
 } from '@mui/x-charts/colorPalettes';
 
 import geoData from "../../../../assets/us.json";
+import { Card } from '@mui/material';
+
+/*
 
 type GPSMap = { //Think of this like a function declaration like in a header file in c
     title: string,
     xAxis: string
-}
-
+};
 
 
 export const GPSMap = ({ title, xAxis }: GPSMap) => <aside>
@@ -42,4 +44,45 @@ export const GPSMap = ({ title, xAxis }: GPSMap) => <aside>
     </ComposableMap>
   </div>
 </aside>
+*/
 
+//constant 
+
+
+type GPSMapState = { //class "instance" variables
+  currentCoordinatex: number,
+  currentCoordinatey: number,
+}
+
+type GPSMapProps = { //constructor variables
+  initialCoordinatex: number,
+  initialCoordinatey: number
+};
+
+export class GPSMap extends React.Component<GPSMapProps, GPSMapState>{
+  state: GPSMapState = { //initialize instance variables
+    currentCoordinatex: this.props.initialCoordinatex,
+    currentCoordinatey: this.props.initialCoordinatey
+  };
+
+  render() { //frontend component
+    return <Card className= "card" variant="outlined" sx={{ height: '60vh' }}>
+      <ComposableMap projection="geoMercator"  >
+        <ZoomableGroup center={[this.state.currentCoordinatex, this.state.currentCoordinatey]} zoom={5}>
+          <Geographies geography={geoData}>
+            {({ geographies }) =>
+              geographies.map((geo) => (
+                <Geography key={geo.rsmKey} geography={geo} />
+              ))
+            }
+          </Geographies>
+          <Marker coordinates={[this.state.currentCoordinatex, this.state.currentCoordinatey]}>
+            <circle r={0.1} fill="#FF5533" />
+          </Marker>
+        </ZoomableGroup>
+      </ComposableMap>
+    </Card>
+
+    
+  }
+}

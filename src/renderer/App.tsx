@@ -1,10 +1,11 @@
 import { MemoryRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import icon from '../../assets/start_icon.png';
-import './App.css';
+import './css/App.css';
 
 
 //page imports for routing
 import Home from './PageHome';
+import Map from './PageMap';
 
 //-----
 
@@ -20,25 +21,30 @@ import {Card} from './components/example_component';
 const data  = <Card title="Here is a Example Functional Component" paragraph="Enter main screen below" />
 
 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+
+
 function StartScreen() {
   return (
 
 
-      <div className="container">
-        <div className="section">
-          <img width="200" alt="icon" src={icon} />
-        </div>
-        <div className="section"><h1>Groundstation GUI Test</h1></div>
-        <div className="section">
-          {data}
-        </div>
-        <div className="section">
-          <button>
-            <li>
-              <Link to="/home">Enter GUI</Link>
-            </li>
-          </button>
+      <div className="page_container">
+          <div className="page_content">
+            <div className="section">
+              <img width="200" alt="icon" src={icon} />
+            </div>
+            <div className="section"><h1>Groundstation GUI Test</h1></div>
+            <div className="section">
+              {data}
+            </div>
+            <div className="section">
+              <button>
+                <li>
+                  <Link to="/home">Enter GUI</Link>
+                </li>
+              </button>
 
+            </div>
         </div>
       </div>
 
@@ -46,17 +52,35 @@ function StartScreen() {
   );
 }
 
+const theme = createTheme({
+  colorSchemes: {
+    dark: true,
+  },
+  components: {
+  MuiButtonBase: {
+    defaultProps: {
+      
+    }
+  }
+  
+  }
+});
+
+
 export default function App() {
   return (
+    <>
 
 
-    
     <Router>
       <Routes>
-        <Route path="/" element={<StartScreen />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<ThemeProvider theme={theme}><StartScreen /></ThemeProvider>} />
+        <Route path="/home" element={<ThemeProvider theme={theme}><Home /></ThemeProvider>} />
+        <Route path="/map" element={<ThemeProvider theme={theme}><Map /></ThemeProvider>} />
       </Routes>
     </Router>
+      </>
+    
   );
 }
 
