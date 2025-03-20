@@ -5,14 +5,15 @@ import serial
 
 import DataRead
 
-import asyncio
+import threading
 
 class Populate():
 
     data_read_obj: DataRead.DataRead = None
 
-    def __init__(self, ):
+    def __init__(self, data_read):
         super().__init__()
+        self.data_read_obj = data_read
         pass
 
     #for testing with radio
@@ -111,7 +112,7 @@ class Populate():
     
 
     #for testing with preset dataset WITHOUT the radio
-    async def populatefile(self):
+    def populatefile(self):
 
         #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
         #with open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/dateUpdate.txt', "w") as f, open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/datainvalids.txt', "r") as f1:
@@ -120,19 +121,22 @@ class Populate():
             arrayList = f1.readlines()
 
             for i in arrayList:
-                #self.data_read_obj.add_data_point(i)
+                self.data_read_obj.add_data_point(i)
                 
-                print("writing: " + i)
+                #print("writing: " + i)
 
                 f.write(i)
                 f.flush()
+                
+                time.sleep(2)
 
-                await asyncio.sleep(1)
+    def runpopulatefile(self): #this method will run the data retrieval from radio/test file in a separate thread (or else it would be blocking execution from the rest of the backend)
+        threading.Thread(target=self.populatefile).start()   
 
 
     
 
-pop = Populate()
+#pop = Populate()
 
-pop.populatefile()
+#pop.populatefile()
 #pop.populatefileradio()
