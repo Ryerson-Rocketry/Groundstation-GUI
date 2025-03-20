@@ -57,6 +57,18 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
+  //PYTHON FLASK
+  console.log(`Initializing flask connection to backend: \n`); // when error
+
+  var python = require('child_process').spawn('py', ['./Python Backend/main.py']);
+  python.stdout.on('data', function (data) {
+    console.log("data: ", data.toString('utf8'));
+  });
+  python.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`); // when error
+  });
+
+
   if (isDebug) {
     await installExtensions();
   }
