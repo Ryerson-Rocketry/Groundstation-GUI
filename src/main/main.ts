@@ -69,9 +69,7 @@ const createWindow = async () => {
     console.log(`stderr: ${data}`); // when error
   });
 
-
-  
-  
+  //---------------------------------
 
   if (isDebug) {
     await installExtensions();
@@ -85,10 +83,11 @@ const createWindow = async () => {
     return path.join(RESOURCES_PATH, ...paths);
   };
 
+  // WINDOW CONFIG
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    width: 1920,
+    height: 1080,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
@@ -98,6 +97,9 @@ const createWindow = async () => {
     
   });
 
+  //----------------------------------------------------
+
+  //load initial page
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   mainWindow.on('ready-to-show', () => {

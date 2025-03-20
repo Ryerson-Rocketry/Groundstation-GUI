@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request, current_app
+from flask_cors import CORS
 
 import populate
 import DataRead
@@ -6,6 +7,7 @@ import DataRead
 import datetime
 
 app = Flask(__name__)
+cors = CORS(app)
 
 @app.route('/test')
 def hello():
@@ -20,22 +22,22 @@ def status():
         return jsonify(status)
     
 @app.route('/radio/restart', methods=['GET'])
-def status():
+def radiorestart():
     with app.app_context(): 
         #TO DO
-        return None
+        return "null"
     
 @app.route('/radio/stop', methods=['GET'])
-def status():
+def radiostop():
     with app.app_context(): 
         #TO DO
-        return None
+        return "null"
     
 @app.route('/radio/start', methods=['GET'])
-def status():
+def radiostart():
     with app.app_context(): 
         #TO DO
-        return None
+        return "null"
 
 @app.route('/read/last/<int:index>', methods=['GET'])
 def readlast(index):
@@ -52,12 +54,12 @@ def readlast(index):
 @app.route('/read/gps', methods=['GET'])
 def readgps():
     #TO DO
-    return None
+    return "null"
 
 @app.route('/read/graph', methods=['GET'])
 def readgraphdata():
     #TO DO
-    return None
+    return "null"
 
 def create_app(): #persistant object handling
     with app.app_context(): #define new objects here stored in current server session
@@ -70,6 +72,5 @@ def create_app(): #persistant object handling
 
 
 if __name__ == '__main__':
-    create_app()
     app.run(host='127.0.0.1', port=5000)
     
