@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import axios from 'axios';
 
 class AppUpdater {
   constructor() {
@@ -61,13 +62,16 @@ const createWindow = async () => {
   console.log(`Initializing flask connection to backend: \n`); // when error
 
   var python = require('child_process').spawn('py', ['./Python Backend/main.py']);
-  python.stdout.on('data', function (data) {
+  python.stdout.on('data', function (data: { toString: (arg0: string) => any; }) {
     console.log("data: ", data.toString('utf8'));
   });
-  python.stderr.on('data', (data) => {
+  python.stderr.on('data', (data: any) => {
     console.log(`stderr: ${data}`); // when error
   });
 
+
+  
+  
 
   if (isDebug) {
     await installExtensions();
@@ -91,6 +95,7 @@ const createWindow = async () => {
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
     },
+    
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
@@ -122,6 +127,9 @@ const createWindow = async () => {
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
+
+
+  makeTestPostRequest();
 };
 
 /**

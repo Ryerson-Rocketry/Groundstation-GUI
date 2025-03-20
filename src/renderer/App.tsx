@@ -24,9 +24,20 @@ const data  = <Card title="Here is a Example Functional Component" paragraph="En
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 
+import axios from 'axios';
+//TEST FLASK
+async function makeTestPostRequest() {
+  axios.get('http://127.0.0.1:5000/test')
+  .then(function (response) {
+    console.log("It says: ", response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
 function StartScreen() {
   return (
-
 
       <div className="page_container">
           <div className="page_content">
@@ -38,6 +49,9 @@ function StartScreen() {
               {data}
             </div>
             <div className="section">
+              <button onClick={() => makeTestPostRequest()}>
+                  Flask Test Request
+              </button>
               <button>
                 <li>
                   <Link to="/home">Enter GUI</Link>
