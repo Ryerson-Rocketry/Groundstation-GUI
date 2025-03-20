@@ -3,9 +3,15 @@ import time as t
 import serial
 #import keyboard 
 
+import DataRead
+
+import asyncio
 
 class Populate():
-    def __init__(self):
+
+    data_read_obj: DataRead.DataRead = None
+
+    def __init__(self, ):
         super().__init__()
         pass
 
@@ -105,7 +111,7 @@ class Populate():
     
 
     #for testing with preset dataset WITHOUT the radio
-    def populatefile(self):
+    async def populatefile(self):
 
         #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
         #with open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/dateUpdate.txt', "w") as f, open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/datainvalids.txt', "r") as f1:
@@ -114,12 +120,16 @@ class Populate():
             arrayList = f1.readlines()
 
             for i in arrayList:
+                #self.data_read_obj.add_data_point(i)
+                
                 print("writing: " + i)
 
                 f.write(i)
                 f.flush()
 
-                time.sleep(1)
+                await asyncio.sleep(1)
+
+
     
 
 pop = Populate()
