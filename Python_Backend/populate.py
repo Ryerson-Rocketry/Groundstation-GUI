@@ -99,9 +99,10 @@ class Populate():
     #for testing WITH the radio
     def populatefileradio(self, data_str):
 
-        with open('dateUpdate.txt', "a") as f, open('data.txt', "r") as f1:
+        with open('dateUpdate.txt', "a") as f:
                 
                 if (data_str != ""):   
+                    self.data_read_obj.add_data_points(data_str)
                     f.write(data_str + "\n")
                     f.flush()
 
@@ -116,12 +117,12 @@ class Populate():
 
         #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
         #with open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/dateUpdate.txt', "w") as f, open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/datainvalids.txt', "r") as f1:
-        with open('dateUpdate.txt', "w") as f, open('datainvalids.txt', "r") as f1:   
+        with open('dateUpdate.txt', "w") as f, open('D:\Programming\MetRocketry\Groundstation-GUI_Electron\Python_Backend\datainvalids.txt', "r") as f1: #note this should be temp (if program is built it wouuld read and write to this directory)  
 
             arrayList = f1.readlines()
 
             for i in arrayList:
-                self.data_read_obj.add_data_point(i)
+                self.data_read_obj.add_data_points(i)
                 
                 #print("writing: " + i)
 

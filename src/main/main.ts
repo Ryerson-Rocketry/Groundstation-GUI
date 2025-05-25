@@ -14,7 +14,12 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import axios from 'axios';
+
+import { StartScreenController } from './Controller/StartScreenController';
+
+
+const isDebug =
+  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 class AppUpdater {
   constructor() {
@@ -24,7 +29,25 @@ class AppUpdater {
   }
 }
 
+//BACKEND INIT
+
+class mainController {
+  startScreenController: StartScreenController
+
+      constructor() {
+          this.startScreenController = new StartScreenController();
+      }
+
+}
+
+var main = new mainController();
+
+
+//-------
+
 let mainWindow: BrowserWindow | null = null;
+
+//IPC CONNECTIONS
 
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
@@ -32,13 +55,30 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
+ipcMain.on('start', async (event, arg) => {
+  if (arg == ""){
+    event.reply('start', console.log(main.startScreenController.checkFlaskStatus()));
+  }
+  else{
+    event.reply('start', console.log("Undefined ipc request from start screen"));
+  }
+
+});
+
+
+
+
+
+
+
+
+//--------------------
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
 
-const isDebug =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
 
 if (isDebug) {
   require('electron-debug')();
@@ -61,7 +101,7 @@ const createWindow = async () => {
   //PYTHON FLASK
   console.log(`Initializing flask connection to backend: \n`); // when error
 
-  var python = require('child_process').spawn('py', ['./Python Backend/main.py']);
+  var python = require('child_process').spawn('py', ['./Python_Backend/main.py']);
   python.stdout.on('data', function (data: { toString: (arg0: string) => any; }) {
     console.log("data: ", data.toString('utf8'));
   });
@@ -70,6 +110,7 @@ const createWindow = async () => {
   });
 
   //---------------------------------
+
 
   if (isDebug) {
     await installExtensions();
@@ -92,7 +133,7 @@ const createWindow = async () => {
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
-        : path.join(__dirname, '../../.erb/dll/preload.js'),
+        : path.join(__dirname, '../../.erb/dll/preload.js'), 
     },
     
   });

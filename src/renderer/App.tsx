@@ -4,8 +4,9 @@ import './css/App.css';
 
 
 //page imports for routing
-import Home from './PageHome';
-import Map from './PageMap';
+import Home from './Views/PageHome';
+import Map from './Views/PageMap';
+import Graph from './Views/PageGraph';
 
 //-----
 
@@ -27,9 +28,20 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios';
 //TEST FLASK
 async function makeTestPostRequest() {
-  axios.get('http://127.0.0.1:5000/test')
+  axios.get('http://127.0.0.1:5000/read/last/0')
   .then(function (response) {
-    console.log("It says: ", response.data);
+    //console.log("It says: ", response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
+//Radio
+async function initializeRadioConnection() {
+  axios.get('http://127.0.0.1:5000/start')
+  .then(function (response) {
+    console.log("Radio started: ", response.data);
   })
   .catch(function (error) {
     console.log(error);
@@ -43,22 +55,33 @@ function StartScreen() {
           <div className="page_content">
             <div className="section">
               <img width="200" alt="icon" src={icon} />
+              
             </div>
-            <div className="section"><h1>Groundstation GUI Test</h1></div>
+            <div className="section"><h1>Groundstation GUI</h1></div>
             <div className="section">
               {data}
             </div>
+            <div className="section"> <h2>Debug Menu</h2></div>
             <div className="section">
               <button onClick={() => makeTestPostRequest()}>
                   Flask Test Request
               </button>
+               <button onClick={() => initializeRadioConnection()}>
+                  Start Radio Connection
+              </button>
+              <button onClick={() => window.electron.ipcRenderer.sendMessage('start', [''])}>
+                  IPC Test Request
+              </button>
+              </div>
+              <div className="floating_section"> <h2>Flask Status</h2> </div>
+
               <button>
                 <li>
                   <Link to="/home">Enter GUI</Link>
                 </li>
               </button>
 
-            </div>
+            
         </div>
       </div>
 
@@ -84,13 +107,12 @@ const theme = createTheme({
 export default function App() {
   return (
     <>
-
-
     <Router>
       <Routes>
         <Route path="/" element={<ThemeProvider theme={theme}><StartScreen /></ThemeProvider>} />
         <Route path="/home" element={<ThemeProvider theme={theme}><Home /></ThemeProvider>} />
         <Route path="/map" element={<ThemeProvider theme={theme}><Map /></ThemeProvider>} />
+        <Route path="/graph" element={<ThemeProvider theme={theme}><Graph /></ThemeProvider>} />
       </Routes>
     </Router>
       </>

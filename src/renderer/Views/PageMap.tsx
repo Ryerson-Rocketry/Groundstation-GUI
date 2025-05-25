@@ -1,15 +1,15 @@
 import React from 'react';
-import './css/App.css';
-import './css/GeneralStyles.css';
-import './css/PageHome.css';
+import './../css/App.css';
+import './../css/GeneralStyles.css';
+import './../css/PageHome.css';
 
 import Card from '@mui/material/Card';
 import { Button } from '@mui/material';
 
-import {Chart} from './components/data_display/graph';
-import {GPSMap} from './components/data_display/map';
+import {ChartView} from '../components/data_display/GraphView';
+import {GPSMap} from '../components/data_display/MapView';
 
-import { NavHeader } from './components/common/nav_header';
+import { NavHeader } from '../components/common/nav_header';
 
 const MapComponent  = <GPSMap initialCoordinatex={-100} initialCoordinatey={40} />;
 

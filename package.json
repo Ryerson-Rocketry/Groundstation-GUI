@@ -110,9 +110,11 @@
     "electron-debug": "^3.2.0",
     "electron-log": "^4.4.8",
     "electron-updater": "^6.1.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "leaflet": "^1.9.4",
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1",
     "react-gauge-component": "^1.2.64",
+    "react-leaflet": "^5.0.0-rc.2",
     "react-router-dom": "^6.16.0",
     "react-simple-maps": "^3.0.0"
   },

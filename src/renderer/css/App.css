@@ -23,6 +23,13 @@ body {
   overflow-y: hidden; /* scroll bar */
 }
 
+.page_content {
+  display: grid;
+  grid-template-columns: 1fr; /* One column, adjust as needed */
+  grid-auto-flow: row; /* Automatically places items in rows */
+  gap: 10px; /* Space between items */
+}
+
 button {
   background-color: rgb(143, 130, 202);
   padding: 10px 20px;
@@ -65,6 +72,15 @@ a:hover {
   margin: 20px 0;
 }
 
+.floating_section {
+  justify-content: center;
+  position: absolute;
+  top: 20px;
+  text-align: center;
+  align-items: center;
+  margin: 5px 5pz;
+}
+
 .container {
   display: grid;
   grid-template-columns: 1fr;
@@ -78,3 +94,12 @@ a:hover {
   background-color: grey;
   text-decoration: none;
 }
+
+.floating_toolbox {
+  position: fixed;
+  top: '0px';
+  right: '0px';
+  width: '300px';
+  text-align: center;
+}
+
