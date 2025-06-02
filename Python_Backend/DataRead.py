@@ -11,16 +11,30 @@ class DataRead():
 
     data_lists = []
     
+    """
     graphDict = {
         0:"Time",
         1:"Pressure",
         2:"Temperature",
         3:"Battery Voltage",
+        7:"x coord",
+        8:"y coord",
         4:"Acceleration X",
-        7:"Accelerometer Y",
-        8:"Accelerometer Z",
-        5:"x coord",
-        6:"y coord"
+        5:"Accelerometer Y",
+        6:"Accelerometer Z",
+
+    }
+    """
+    graphDict = {
+        "Time": 0,
+        "Pressure": 1,
+        "Temperature":2,
+        "Battery Voltage":3,
+        "Acceleration X":4,
+        "Accelerometer Y":5,
+        "Accelerometer Z":6,
+        "x coord":7,
+        "y coord":8,
     }
 
     has_changed_since_last_request = False
@@ -28,7 +42,7 @@ class DataRead():
 
     def __init__(self):
         super().__init__()
-        for i in range (7):
+        for i in range (9):
             self.data_lists.append([])
         pass
      
@@ -64,6 +78,21 @@ class DataRead():
         self.uid = 0
         return specific_list
     
+    def get_coordinates(self, all: bool):
+        if (all == False):
+            
+            specific_list = []
+            specific_list.append({'x': self.data_lists[7][len(self.data_lists[0])-1], 'y': self.data_lists[8][len(self.data_lists[0])-1]})
+            return specific_list
+        
+        else:
+    
+            specific_list = []
+            for i in range (len(self.data_lists[0])-1):
+                specific_list.append({'x': self.data_lists[7][i], 'y': self.data_lists[8][i]})
+            
+            return specific_list
+    
     def get_latest_points(self):
         """
         return the latest data point of [x: n, y: m], where n = time of the current row, m = selected data from row
@@ -77,6 +106,8 @@ class DataRead():
         specific_list.append(self.data_lists[4][len(self.data_lists[0])-1])
         specific_list.append(self.data_lists[5][len(self.data_lists[0])-1])
         specific_list.append(self.data_lists[6][len(self.data_lists[0])-1])
+        specific_list.append(self.data_lists[7][len(self.data_lists[0])-1])
+        specific_list.append(self.data_lists[8][len(self.data_lists[0])-1])
                
         return specific_list
 
@@ -87,7 +118,7 @@ class DataRead():
         raw_data = string.strip("\n")
         raw_data = raw_data.split(",")
        # print(len(self.data_lists), flush=True)
-        for i in range (7):
+        for i in range (9):
             self.data_lists[i].append(float(raw_data[i])) 
         
             

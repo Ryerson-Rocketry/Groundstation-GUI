@@ -7,6 +7,8 @@
 }
 
 .center_container{
+    padding-top: 10vh;
+    
     display: grid;
     grid-template-columns: 1fr 1fr;
     margin: 5%;
@@ -31,6 +33,7 @@
 .graph_container{
     display: grid;
     grid-template-rows: 1fr 15fr;
+    text-align: center;
 }
 
 .map_container{
@@ -50,4 +53,11 @@
 
 .card{
     background: linear-gradient(to right bottom,rgb(3, 3, 3),rgb(49, 49, 49))
+}
+
+.card_right_align{
+    background: linear-gradient(to right bottom,rgb(3, 3, 3),rgb(49, 49, 49));
+    margin-left: auto; 
+    margin-right: 0;
+    text-align: center;
 }

@@ -2,30 +2,38 @@ import { MemoryRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import icon from '../../assets/start_icon.png';
 import './css/App.css';
 
-
 //page imports for routing
 import Home from './Views/PageHome';
 import Map from './Views/PageMap';
 import Graph from './Views/PageGraph';
+import Settings from './Views/PageSettings';
 
 //-----
-
+import { StartScreenFloatingToolbox } from './components/common/start_screen_floating_toolbox';
 
 //MUI styling imports
-import { Link as MLink} from '@mui/material';
-
+import { Button, ButtonProps, Chip, Divider, IconButton, Link as MLink, Snackbar, SnackbarCloseReason, styled} from '@mui/material';
+//import CloseIcon from '@mui/icons-material/Close'; broken
+ 
 //-----
 
+import { useStartingParametersStore, useStatusStore, Coordinate } from './GlobalStateStores';
 
-import {Card} from './components/example_component';
 
-const data  = <Card title="Here is a Example Functional Component" paragraph="Enter main screen below" />
+
+
 
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 
+
 import axios from 'axios';
+import { CommonFloatingInfoBox } from './components/common/common_floating_infobox';
+import { purple } from '@mui/material/colors';
+import { LinkButton, RegularButton } from './components/mui_custom_components/mui_custom_component';
+import { useState } from 'react';
+
 //TEST FLASK
 async function makeTestPostRequest() {
   axios.get('http://127.0.0.1:5000/read/last/0')
@@ -38,49 +46,95 @@ async function makeTestPostRequest() {
 }
 
 //Radio
-async function initializeRadioConnection() {
-  axios.get('http://127.0.0.1:5000/start')
+async function initializeFlaskServer() {
+  axios.get('http://127.0.0.1:5000/setup')
   .then(function (response) {
-    console.log("Radio started: ", response.data);
+    console.log("Flask Setup started: ", response.data);
   })
   .catch(function (error) {
     console.log(error);
   });
 }
 
+
 function StartScreen() {
+    const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (
+  event: React.SyntheticEvent | Event,
+  reason?: SnackbarCloseReason,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  //Radio
+  async function initializeRadioConnection() {
+      if (useStatusStore.getState().radioStatus == false){
+        axios.get('http://127.0.0.1:5000/radio/start')
+      .then(function (response) {
+        console.log("Radio started: ", response.data);
+        useStatusStore.getState().setRadioStatus(true);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    }
+    else{
+      console.log("radio already running");
+      setOpen(true);
+    }
+    
+  }
+
   return (
 
       <div className="page_container">
+
+        <Snackbar
+          open={open}
+          autoHideDuration={1000}
+          onClose={handleClose}
+          message="Radio already running!"
+        />
+          
+
+
+        <StartScreenFloatingToolbox/>
+        <CommonFloatingInfoBox/>
+
           <div className="page_content">
             <div className="section">
               <img width="200" alt="icon" src={icon} />
               
             </div>
             <div className="section"><h1>Groundstation GUI</h1></div>
+
+            <div className="section"> <h2>Initialization Menu</h2></div>
+            <Divider component="li"> <Chip label="Backend Setup" size="small" /></Divider>
             <div className="section">
-              {data}
-            </div>
-            <div className="section"> <h2>Debug Menu</h2></div>
-            <div className="section">
-              <button onClick={() => makeTestPostRequest()}>
-                  Flask Test Request
-              </button>
-               <button onClick={() => initializeRadioConnection()}>
+               <RegularButton onClick={() => initializeRadioConnection()}> 
                   Start Radio Connection
-              </button>
-              <button onClick={() => window.electron.ipcRenderer.sendMessage('start', [''])}>
+              </RegularButton>
+              {/*
+                <button onClick={() => window.electron.ipcRenderer.sendMessage('start', [''])}>
                   IPC Test Request
-              </button>
+                </button>
+              */}
+
               </div>
-              <div className="floating_section"> <h2>Flask Status</h2> </div>
-
-              <button>
-                <li>
-                  <Link to="/home">Enter GUI</Link>
-                </li>
-              </button>
-
+            <Divider component="li"> </Divider>
+              <div className="section">
+                <LinkButton component={Link} to={'/home'} variant="contained"> Enter GUI </LinkButton>
+              </div>
             
         </div>
       </div>
@@ -113,10 +167,15 @@ export default function App() {
         <Route path="/home" element={<ThemeProvider theme={theme}><Home /></ThemeProvider>} />
         <Route path="/map" element={<ThemeProvider theme={theme}><Map /></ThemeProvider>} />
         <Route path="/graph" element={<ThemeProvider theme={theme}><Graph /></ThemeProvider>} />
+        <Route path="/settings" element={<ThemeProvider theme={theme}><Settings /></ThemeProvider>} />
       </Routes>
     </Router>
       </>
     
   );
 }
+
+
+export const GLOBAL_NAMES = ["Time", "Pressure", "Temperature", "Voltage", "X Axis Acceleration","Y Axis Acceleration", "Z Axis Acceleration"];
+export const GLOBAL_UNITS = ["Sec", "mBar", "C", "V", "G", "G", "G"];
 

@@ -2,6 +2,7 @@ import { Button, ButtonGroup, Card, Chip, Divider, Grid2 } from '@mui/material';
 import '../../css/GeneralStyles.css';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { LinkButton } from '../mui_custom_components/mui_custom_component';
 
 
 
@@ -9,19 +10,14 @@ export const NavHeader = () => <aside>
   <div className='header_container'>   
 
     <div className='header_info_section'>  
+      
       <ButtonGroup variant="contained" aria-label="Basic button group">
-        <Button> <li> <Link to="/">Start Menu</Link> </li> </Button>
-        <Button> <li> <Link to="/home">Home Dashboard</Link> </li> </Button>
-        <Button> <li> <Link to="/graph">Graph</Link> </li> </Button>
-        <Button> <li> <Link to="/map">GPS Map</Link> </li> </Button>
-        <Button> <li> <Link to="/config">Settings</Link> </li> </Button>
+        <LinkButton component={Link} to={'/'} variant="contained">Start Menu</LinkButton>
+        <LinkButton component={Link} to={'/home'} variant="contained">Home Dashboard</LinkButton>
+        <LinkButton component={Link} to={'/graph'} variant="contained">Graph</LinkButton>
+        <LinkButton component={Link} to={'/map'} variant="contained">GPS Map</LinkButton>
+        <LinkButton component={Link} to={'/settings'} variant="contained">Settings</LinkButton>
       </ButtonGroup>  
-
-      <Grid2 container spacing={2}>
-      <Grid2 size={8}>
-        <Card>GUI Status</Card>
-      </Grid2>
-    </Grid2>
     </div>  
      
       
