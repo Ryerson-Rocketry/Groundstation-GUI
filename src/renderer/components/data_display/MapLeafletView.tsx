@@ -58,16 +58,11 @@ export const LeafletMap = ({ width, height, freePan}: LeafletMapProps) => {
       .then(function (response) {
           //console.log("recieving data in PageGraph.tsx ");
           setRocketCoords({'x': response.data[0]['x'], 'y': response.data[0]['y']});
-          rerRen();
       })
       .catch(function (error) {
           console.log(error);
       });
       
-
-      
-      
-
     }, 1000);
 
     return () => clearInterval(interval);
@@ -100,15 +95,16 @@ export const LeafletMap = ({ width, height, freePan}: LeafletMapProps) => {
         );
 
         tileLayerOffline.addTo(map);
-
+        
         // @ts-ignore
         const controlSaveTiles = L.control.savetiles(
           tileLayerOffline, 
           {
-            zoomlevels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], // optional zoomlevels to save, default current zoomlevel
+            zoomlevels: [1], // optional zoomlevels to save, default current zoomlevel
           }
         );
 
+        
         controlSaveTiles.addTo(map!);
 
         L.marker([launchCoords.x, launchCoords.y], {icon: launchIcon}).addTo(map).bindPopup("Launch Point");
@@ -141,6 +137,4 @@ export const LeafletMap = ({ width, height, freePan}: LeafletMapProps) => {
   )
 }
 
-function rerRen() {
-  throw new Error('Function not implemented.');
-}
+

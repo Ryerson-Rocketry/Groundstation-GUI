@@ -9,11 +9,15 @@ export interface Coordinate{
 interface StartingParametersState {
   mapStartingMarkerCoordinates: Coordinate
   setStartingMarkerCoordinates: (newStartingMarkerCoordinates: Coordinate) => void
+  portID: number
+  setPortID: (newPortID: number) => void
 }
 
 export const useStartingParametersStore = create<StartingParametersState>((set) => ({
   mapStartingMarkerCoordinates: {x: 31.0498056, y: -103.39730555555556}, //note that this causes a trailing garbage error, likely hard
-  setStartingMarkerCoordinates: (newStartingMarkerCoordinates) =>set((state) => ({ mapStartingMarkerCoordinates: newStartingMarkerCoordinates }))
+  setStartingMarkerCoordinates: (newStartingMarkerCoordinates) =>set((state) => ({ mapStartingMarkerCoordinates: newStartingMarkerCoordinates })),
+  portID: 5, //note that this causes a trailing garbage error, likely hard
+  setPortID: (newPortID) =>set((state) => ({ portID: newPortID }))
 }))
 
 

@@ -13,6 +13,8 @@ class Populate():
 
     state: bool = False
 
+    port_id: str = "COM5"
+
     def __init__(self, data_read):
         super().__init__()
         self.data_read_obj = data_read
@@ -20,7 +22,7 @@ class Populate():
 
     #for testing with radio
     def radiorun(self):
-        port = "COM5"
+        port = self.port_id
 
         baud  = 57600 
         ####    initilization    ####
@@ -138,13 +140,14 @@ class Populate():
                 
                 time.sleep(2)
 
-    def runpopulatefile(self): #this method will run the data retrieval from radio/test file in a separate thread (or else it would be blocking execution from the rest of the backend)
-        threading.Thread(target=self.populatefile).start()   
-
+    def runpopulatefile(self, demo: bool): #this method will run the data retrieval from radio/test file in a separate thread (or else it would be blocking execution from the rest of the backend)
+        if (demo == True):
+            threading.Thread(target=self.populatefile).start()   
+        else:
+            threading.Thread(target=self.radiorun).start()  
 
     
-
-#pop = Populate(DataRead.DataRead())
+pop = Populate(DataRead.DataRead())
 
 #pop.populatefile()
 #pop.populatefileradio()

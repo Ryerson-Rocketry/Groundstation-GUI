@@ -76,16 +76,29 @@ function StartScreen() {
   };
 
   //Radio
-  async function initializeRadioConnection() {
+  async function initializeRadioConnection(demo: boolean) {
       if (useStatusStore.getState().radioStatus == false){
-        axios.get('http://127.0.0.1:5000/radio/start')
-      .then(function (response) {
-        console.log("Radio started: ", response.data);
-        useStatusStore.getState().setRadioStatus(true);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        if (demo == true){  
+          axios.get('http://127.0.0.1:5000/radio/demo')
+          .then(function (response) {
+            console.log("Radio started: ", response.data);
+            useStatusStore.getState().setRadioStatus(true);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        } 
+        else{
+          axios.get('http://127.0.0.1:5000/radio/start')
+          .then(function (response) {
+            console.log("Radio started in demo mode: ", response.data);
+            useStatusStore.getState().setRadioStatus(true);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        }
+
 
     }
     else{
@@ -119,10 +132,13 @@ function StartScreen() {
             <div className="section"><h1>Groundstation GUI</h1></div>
 
             <div className="section"> <h2>Initialization Menu</h2></div>
-            <Divider component="li"> <Chip label="Backend Setup" size="small" /></Divider>
+            <Divider component="li"> <Chip label="Radio Setup" size="small" /></Divider>
             <div className="section">
-               <RegularButton onClick={() => initializeRadioConnection()}> 
+              <RegularButton onClick={() => initializeRadioConnection(false)}> 
                   Start Radio Connection
+              </RegularButton>
+              <RegularButton onClick={() => initializeRadioConnection(true)}> 
+                  Start Demo Mode
               </RegularButton>
               {/*
                 <button onClick={() => window.electron.ipcRenderer.sendMessage('start', [''])}>
@@ -133,7 +149,7 @@ function StartScreen() {
               </div>
             <Divider component="li"> </Divider>
               <div className="section">
-                <LinkButton component={Link} to={'/home'} variant="contained"> Enter GUI </LinkButton>
+                <LinkButton component={Link} to={'/home'} variant="contained"> Enter Dashboard </LinkButton>
               </div>
             
         </div>
