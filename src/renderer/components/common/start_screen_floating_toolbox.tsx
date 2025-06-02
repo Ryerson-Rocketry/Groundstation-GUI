@@ -26,10 +26,23 @@ const renderConnectionStatusComponent = (connectionStatus: boolean) => {
 
 export const StartScreenFloatingToolbox = () => {
     const[tempStartingCoordinate, setTempCoord] = useState(useStartingParametersStore((state) => state.mapStartingMarkerCoordinates));
+    const[tempPortID, setPort] = useState(useStartingParametersStore((state) => state.portID));
 
     function saveStartingCoordinate() {
         useStartingParametersStore.getState().setStartingMarkerCoordinates(tempStartingCoordinate);
         console.log("set starting coordinates as: "  + useStartingParametersStore.getState().mapStartingMarkerCoordinates.x + " " + useStartingParametersStore.getState().mapStartingMarkerCoordinates.y);
+    }
+
+    async function savePortID() {
+        useStartingParametersStore.getState().setPortID(tempPortID);
+        console.log("set port id");
+        await axios.get('http://127.0.0.1:5000/radio/port/' + tempPortID)
+        .then(function (response) {
+            console.log("posted new port id");
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
 
     //{console.log(useStatusStore((state) => state.radioStatus));}
@@ -56,8 +69,13 @@ export const StartScreenFloatingToolbox = () => {
                 onChange= {(event) => {setTempCoord({x: parseFloat(event.target.value.split(" ")[0]), y:parseFloat(event.target.value.split(" ")[1])});
                 //console.log("saved new coordinates as: " + tempStartingCoordinate.x + " " + tempStartingCoordinate.y)
                 }}/>
-
                 <Button onClick={() => {saveStartingCoordinate()}}> <li> Set Starting Coordinates </li> </Button>
+
+                <TextField id="filled-basic" label="Set Radio Serial Port" variant="filled" placeholder={"number"} helperText={"Set Radio Serial Port ID (Default COM5); Current:" + useStartingParametersStore.getState().portID}
+                onChange= {(event) => {setPort(parseInt(event.target.value));
+                //console.log("saved new coordinates as: " + tempStartingCoordinate.x + " " + tempStartingCoordinate.y)
+                }}/>
+                <Button onClick={() => {savePortID()}}> <li> Set Port ID </li> </Button>
 
             </div>    
 

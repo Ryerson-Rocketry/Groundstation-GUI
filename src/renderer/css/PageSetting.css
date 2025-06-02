@@ -1,0 +1,25 @@
+
+
+.center_container_settings {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  
+}
+
+.element_row_settings{
+  display: flex;
+  padding-left: 1%;
+  padding-right: 1%;
+
+
+  text-align: center;
+  height: 30px;
+  line-height: 30px; 
+
+  font-size: 15px;
+
+}

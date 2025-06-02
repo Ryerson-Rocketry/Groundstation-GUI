@@ -16,6 +16,7 @@ import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 import { StartScreenController } from './Controller/StartScreenController';
+import { kill } from 'process';
 
 
 const isDebug =
@@ -98,17 +99,26 @@ const installExtensions = async () => {
 };
 
 const createWindow = async () => {
-  //PYTHON FLASK
-  console.log(`Initializing flask connection to backend: \n`); // when error
+  
+  //backend flask
+  if (app.isPackaged == false){ // fork process directly from main.py when not packaged (compiled into exe)
+    
+    console.log(`Initializing flask connection to backend: \n`); // when error
+    var python = require('child_process').spawn('py', ['./Python_Backend/main.py']);
+    python.stdout.on('data', function (data: { toString: (arg0: string) => any; }) {
+      console.log("data: ", data.toString('utf8'));
+      console.log("directory name is: " + __dirname);
+    });
+    python.stderr.on('data', (data: any) => {
+      console.log(`stderr: ${data}`); // when error
+    });
+  }
+  else{ //must fork in root directory
+      //var pythonExe = require('child_process').spawn("D:/Programming/MetRocketry/Groundstation-GUI_Electron/release/build/win-unpacked/main.exe");
+      //note that '../../../../' is needed as the actual directory to the root project files is embedded deeper in __dirname
+      var pythonExe = require('child_process').spawn( path.join(__dirname, '../../../../') + "main.exe");
 
-  var python = require('child_process').spawn('py', ['./Python_Backend/main.py']);
-  python.stdout.on('data', function (data: { toString: (arg0: string) => any; }) {
-    console.log("data: ", data.toString('utf8'));
-  });
-  python.stderr.on('data', (data: any) => {
-    console.log(`stderr: ${data}`); // when error
-  });
-
+  }
   //---------------------------------
 
 
@@ -155,6 +165,7 @@ const createWindow = async () => {
   });
 
   mainWindow.on('closed', () => {
+    kill(pythonExe.pid, "SIGKILL"); //kill the child flask server
     mainWindow = null;
   });
 

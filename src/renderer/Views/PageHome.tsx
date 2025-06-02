@@ -39,7 +39,7 @@ const Layout = () => {
     const [graphNames] = useState(GLOBAL_NAMES);
     const [graphUnits] = useState(GLOBAL_UNITS);
 
-    const [useNewMap, setNewMap] = useState(false);
+    const [useNewMap, setNewMap] = useState(true);
     const [useAutopan , setAutopan] = useState(false);
     const [map, setMap] = useState(<div></div>);
 
@@ -56,8 +56,6 @@ const Layout = () => {
 
                         await axios.get('http://127.0.0.1:5000/read/graph/all')
                         .then(function (response) {
-
-                            
                             //console.log(accelx[0]);
                             for (let i = 0; i < response.data[4].length; i++){
                                 

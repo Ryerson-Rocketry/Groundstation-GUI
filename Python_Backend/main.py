@@ -20,7 +20,7 @@ def status():
     with app.app_context(): 
         #deltatime = ((datetime.datetime.now()) - current_app.config['start_time'] ).seconds
 
-        status = [{'state': True, 'runTime': 0, "radio_state": current_app.radio_read.state}]
+        status = [{'state': True, 'runTime': 0, "radio_state": current_app.radio_read.state, "radio_port_id": current_app.radio_read.port_id}]
         return jsonify(status)
 
 
@@ -67,10 +67,21 @@ def initialgraphdata():
     return jsonify(data) #jsonify returns data formatted into json (good for parsing it from the frontend)
 
 
+@app.route('/radio/demo', methods=['GET'])
+def radio_demo():
+    current_app.radio_read.runpopulatefile(True) #run the radio data retrieval / test file
+    
+    return jsonify(True)
+
 @app.route('/radio/start', methods=['GET'])
 def radio_start():
+    current_app.radio_read.runpopulatefile(False) #run the radio data retrieval / test file
     
-    current_app.radio_read.runpopulatefile() #run the radio data retrieval / test file
+    return jsonify(True)
+
+@app.route('/radio/port/<int:index>', methods=['GET'])
+def radio_port(index):
+    current_app.radio_read.port_id = index
     
     return jsonify(True)
 
