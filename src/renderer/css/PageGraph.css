@@ -1,0 +1,13 @@
+
+.graphs_container{
+  margin: 10px;
+  display:grid;
+  grid-template-columns: 50% 50%;
+  grid-row: auto auto;
+  grid-column-gap: 5px;
+  grid-row-gap: 5px;
+}
+
+.graphs_element{
+    height:50px
+}

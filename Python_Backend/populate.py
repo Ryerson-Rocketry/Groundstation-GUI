@@ -11,6 +11,8 @@ class Populate():
 
     data_read_obj: DataRead.DataRead = None
 
+    state: bool = False
+
     def __init__(self, data_read):
         super().__init__()
         self.data_read_obj = data_read
@@ -41,6 +43,9 @@ class Populate():
                 print(e)
                 radio_connect = False
                 exit(-1)
+
+                #MODIFIED SINCE LAST YEAR
+                self.state = True
 
         print("Connected")
 
@@ -101,12 +106,14 @@ class Populate():
 
         with open('dateUpdate.txt', "a") as f:
                 
-                if (data_str != ""):   
-                    self.data_read_obj.add_data_points(data_str)
-                    f.write(data_str + "\n")
-                    f.flush()
+            if (data_str != ""):   
+                self.data_read_obj.add_data_points(data_str)
+                f.write(data_str + "\n")
+                f.flush()
 
-                time.sleep(1)
+            time.sleep(1)
+
+            self.state = True
         f.close()
 
         self.radiorun()
@@ -114,10 +121,10 @@ class Populate():
 
     #for testing with preset dataset WITHOUT the radio
     def populatefile(self):
-
+        self.state = True
         #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
         #with open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/dateUpdate.txt', "w") as f, open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/datainvalids.txt', "r") as f1:
-        with open('dateUpdate.txt', "w") as f, open('D:\Programming\MetRocketry\Groundstation-GUI_Electron\Python_Backend\datainvalids.txt', "r") as f1: #note this should be temp (if program is built it wouuld read and write to this directory)  
+        with open('dateUpdate.txt', "w") as f, open('D:\Programming\MetRocketry\Groundstation-GUI_Electron\Python_Backend\simulated_data.txt', "r") as f1: #note this should be temp (if program is built it wouuld read and write to this directory)  
 
             arrayList = f1.readlines()
 
@@ -137,7 +144,7 @@ class Populate():
 
     
 
-#pop = Populate()
+#pop = Populate(DataRead.DataRead())
 
 #pop.populatefile()
 #pop.populatefileradio()

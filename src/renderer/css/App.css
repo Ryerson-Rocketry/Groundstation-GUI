@@ -30,6 +30,12 @@ body {
   gap: 10px; /* Space between items */
 }
 
+.page_content_centered {
+  display: flex;
+  justify-content: center;
+
+}
+
 button {
   background-color: rgb(143, 130, 202);
   padding: 10px 20px;
@@ -96,10 +102,34 @@ a:hover {
 }
 
 .floating_toolbox {
-  position: fixed;
+  position: absolute;
   top: '0px';
   right: '0px';
   width: '300px';
   text-align: center;
+  padding: 1px;
+}
+
+.floating_infobox {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1px;
+
+  text-align: left;
+}
+
+.element_row{
+  display: flex;
+  padding-left: 1%;
+  padding-right: 1%;
+
+
+  text-align: center;
+  height: 30px;
+  line-height: 30px; 
+
+  font-size: 15px;
+
 }
 
