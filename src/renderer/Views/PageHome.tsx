@@ -22,16 +22,12 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { render } from '@testing-library/react';
 
-
-
-
 import { GLOBAL_NAMES, GLOBAL_UNITS } from '../App';
 import { Global } from '@emotion/react';
 import { useStartingParametersStore, Coordinate, useGeneralParametersStore } from '../GlobalStateStores';
 import Common from 'electron/common';
 import { CommonFloatingInfoBox } from '../components/common/common_floating_infobox';
 import { LeafletMap } from '../components/data_display/MapLeafletView';
-import { Height } from '@mui/icons-material';
 
 const Layout = () => {
     const [graphIndex, setGraphIndex] = useState(1);
@@ -106,10 +102,11 @@ const Layout = () => {
         const [newCoordinates, setNewCoordinates] = useState(40);
         useEffect(() => {
             if (useNewMap == true){
-                setMap(<LeafletMap width='44.5vw' height='53.35vh' freePan = {useAutopan}></LeafletMap>)
+                setMap(<LeafletMap width='44.5vw' height='53.35vh' freePan = {useAutopan} showBackupMap = {false} key={0}></LeafletMap>) //key forces rerender
             }
             else{
-                setMap(<GPSMap key={useAutopan.toString()} initialCoordinatex={-100} initialCoordinatey={newCoordinates} initialLaunchPointCoordinate={useStartingParametersStore.getState().mapStartingMarkerCoordinates} panEnable={useAutopan} />)
+                setMap(<LeafletMap width='44.5vw' height='53.35vh' freePan = {useAutopan} showBackupMap = {true} key={1}></LeafletMap>) //key frces rerender, bad practice, refactor later
+                //setMap(<GPSMap key={useAutopan.toString()} initialCoordinatex={-100} initialCoordinatey={newCoordinates} initialLaunchPointCoordinate={useStartingParametersStore.getState().mapStartingMarkerCoordinates} panEnable={useAutopan} />)
             }
         }, [useNewMap, useAutopan]); 
 
@@ -203,7 +200,7 @@ const Layout = () => {
                                         name="radio-buttons-group" 
                                         >
                                         <FormControlLabel value="1" control={<Switch checked={useAutopan} onChange={() => {setAutopan(!useAutopan)}}/>} label="Enable Panning"  onClick={() => {}} />
-                                        <FormControlLabel value="2" control={<Switch checked={useNewMap} onChange={() => {setNewMap(!useNewMap)}}/>} label="Enable Leaflet Map" onClick={() => {}} />
+                                        <FormControlLabel value="2" control={<Switch checked={useNewMap} onChange={() => {setNewMap(!useNewMap)}}/>} label="Show OSM Map" onClick={() => {}} />
                                     </RadioGroup>
                                 </FormControl>
                             </Card>

@@ -30,14 +30,14 @@ const Layout = () => {
             <NavHeader/>
 
             <div className='center_container_settings'>
-                <Card>
+                <Card style={{width: "35vw"}}>
                     Settings
 
                     <Card> 
                         About 
-                        <div className='element_row_settings'> Github Repository: <Card className= "card_right_align" variant="outlined">  <RegularButton onClick={() => OpenNewWindow()}> Link </RegularButton> </Card> </div>
-                        <div className='element_row_settings'> GUI Version:   <Card className= "card_right_align" variant="outlined">  test </Card> </div>
-                        <div className='element_row_settings'> Flask Version:  <Card className= "card_right_align" variant="outlined">  test </Card> </div>
+                        <div className='element_row_settings'> Github Repo: <Card className= "card_right_align" variant="outlined">  <RegularButton onClick={() => OpenNewWindow()}>Link</RegularButton> </Card> </div>
+                        <div className='element_row_settings'> GUI Version:   <Card className= "card_right_align" variant="outlined">V 1.0</Card> </div>
+                        <div className='element_row_settings'> Flask Version:  <Card className= "card_right_align" variant="outlined">V 1.0</Card> </div>
                     </Card>
                     
                 </Card>
@@ -46,7 +46,7 @@ const Layout = () => {
              
         </div>
 
-        
+
 
     )
   };

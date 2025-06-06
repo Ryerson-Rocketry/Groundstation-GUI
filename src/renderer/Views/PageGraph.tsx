@@ -5,7 +5,7 @@ import './../css/PageHome.css';
 import './../css/PageGraph.css';
 
 import Card from '@mui/material/Card';
-import { Button, ButtonGroup } from '@mui/material';
+import { Button, ButtonGroup, Chip } from '@mui/material';
 
 import {ChartView, ChartMultiView, DataPointAccelerometer, DataPoint} from '../components/data_display/GraphView';
 
@@ -57,7 +57,7 @@ const Layout = () => {
         return (
                 [...Array(3).keys()].map((key) => (
                     <div>
-                        {graphNames[key] + " Graph"}
+                        <div style={{textAlign:'center'}}> <Chip label={graphNames[key] + " Graph"} size="small" style={{textAlign:'center'}}/> </div>
                         <ChartView title= {graphNames[key+1] + " Graph"} xAxis="Time (Sec)" yAxis = {graphNames[key+1] + "("+ graphUnits[key+1] + ")"} data = { newData[key+1] } graphheight={GRAPHHEIGHT} pxheight={GRAPHPXHEIGHT} key={key} legend={graphNames[key+1]}></ChartView>            
                     </div>  
                 ))
@@ -100,7 +100,10 @@ const Layout = () => {
         }, [newData, renderState]); 
 
         return (
-            <div>Acceleration Graph<ChartMultiView title= {graphNames[4] + " Graph"} xAxis="Time (Sec)" yAxis = {graphNames[4] + "("+ graphUnits[4] + ")"} dataset = { newData } graphheight={GRAPHHEIGHT} pxheight={GRAPHPXHEIGHT} legend={graphNames[3]}></ChartMultiView></div> );
+            <div>
+                <div style={{textAlign:'center'}}> <Chip label={"Acceleration Graph"} size="small" style={{textAlign:'center'}}/> </div>
+                <ChartMultiView title= {graphNames[4] + " Graph"} xAxis="Time (Sec)" yAxis = {graphNames[4] + "("+ graphUnits[4] + ")"} dataset = { newData } graphheight={GRAPHHEIGHT} pxheight={GRAPHPXHEIGHT} legend={graphNames[3]}></ChartMultiView>
+            </div> );
     }
     
     return (

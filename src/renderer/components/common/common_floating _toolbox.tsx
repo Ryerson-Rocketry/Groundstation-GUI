@@ -21,15 +21,13 @@ export const CommonFloatingToolBox = () => {
     
     return (<div className='floating_toolbox'>
         <Card className= "card" variant="outlined" >   
-            <div className='page_content'>
+
                 <div className='element_row'> Utilities <Card className= "card" variant="outlined"> 
                 </Card><br/> </div>
                 <ButtonGroup variant="contained" aria-label="Stataus">
                     <Button onClick={() => {updateGuiState(true)}}> <li> Start GUI </li> </Button>
                     <Button onClick={() => {updateGuiState(false)}}> <li> Stop GUI </li> </Button>
-                    <Button onClick={() => {}}> <li> Flush Data </li> </Button>
                 </ButtonGroup>  
-            </div>    
 
         </Card>
     </div>);

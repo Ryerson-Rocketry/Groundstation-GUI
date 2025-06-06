@@ -11,6 +11,7 @@ import {LeafletMap} from '../components/data_display/MapLeafletView';
 
 import { NavHeader } from '../components/common/nav_header';
 import { useStartingParametersStore } from '../GlobalStateStores';
+import { CommonFloatingToolBox } from '../components/common/common_floating _toolbox';
 
 
 
@@ -18,10 +19,11 @@ const Layout = () => {
     return (
         <div className='page_container'>
             <NavHeader/>
-            <div className='page_content_centered_map'>
+            <CommonFloatingToolBox/>
+            <div className='page_content_centered_map' style={{marginTop: "50px"}}>
                 <Card>
                     <div style={{margin: "10px"}}>
-                        <LeafletMap width = "80vw" height ="80vh" freePan= {false}></LeafletMap>
+                        <LeafletMap width = "80vw" height ="80vh" freePan= {true} showBackupMap = {true}></LeafletMap>
                     </div>  
                 </Card>
                 
