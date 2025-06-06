@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DOCUMENTATION/Technical/Backend to Frontend Communication.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Backend to Frontend Communication"
+              "title": "README"
             }
           }
         ]
@@ -171,12 +171,12 @@
   },
   "active": "7743354f992d7935",
   "lastOpenFiles": [
+    "DOCUMENTATION/README.md",
+    "DOCUMENTATION/Technical/Backend to Frontend Communication.md",
     "DOCUMENTATION/Diagrams/deployment_diagram.drawio",
     "DOCUMENTATION/Diagrams/backend_class_diagram.drawio",
     "DOCUMENTATION/Diagrams",
     "DOCUMENTATION/Technical/Specifications.md",
-    "DOCUMENTATION/Technical/Backend to Frontend Communication.md",
-    "DOCUMENTATION/README.md",
     "DOCUMENTATION/Technical/Implementation.md",
     "README.md",
     "Development Installation.md",
