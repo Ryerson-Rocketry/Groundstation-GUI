@@ -22,6 +22,6 @@ Note all packages have been included in the git repo, no need to install package
 
 The GUI is comprised of 2 distinct elements:
 
-- Flask Server Application
+- Flask Server Application (Backend)
 - Electron Application (Frontend)
     - Note: Due to the decision to use Flask for the backend, the built in internal Node.js backend is mostly unused by the GUI.

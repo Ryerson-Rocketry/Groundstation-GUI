@@ -80,5 +80,12 @@ To Run the GUI once opened:
 	- [Pyserial](https://pypi.org/project/pyserial/)(Library): Python serial port interface library
 
 ### Languages:
-- Python: Used by backend
-- JavaScript/html/CSS: Used by frontend
+- Python
+- JavaScript
+
+# Attributions 
+
+### Graphics:
+- Map:
+	- <a href="https://www.flaticon.com/free-icons/location" title="location icons">Location icons created by IconMarketPK - Flaticon</a> 
+	- <a href="https://www.flaticon.com/free-icons/address-location" title="address location icons">Address location icons created by alkhalifi design - Flaticon</a>

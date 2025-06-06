@@ -14,7 +14,7 @@ Currently the overall GUI only supports one way communication using REST API req
 
 ##  Sample REST Request from Electron to Flask
 
-The code below shows a example of a request being made to the Flask server for new data to render. this useEffect() function
+The code below shows a example of a request being made to the Flask server for new data to render. this useEffect() function periodically requests the latest lat/long coordinates asynchronously using Axios.
 
 ```JavaScript
 
