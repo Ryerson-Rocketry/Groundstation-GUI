@@ -7,6 +7,9 @@ import DataRead
 
 import threading
 
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 class Populate():
 
     data_read_obj: DataRead.DataRead = None
@@ -15,9 +18,16 @@ class Populate():
 
     port_id: str = "COM5"
 
+    log_path: str = ""
+
     def __init__(self, data_read):
         super().__init__()
         self.data_read_obj = data_read
+ 
+        if (dir_path.endswith('_internal')): #launching flask from compiled electron exe will have this as the endpoint in the flask exe's directory
+            self.log_path = dir_path.removesuffix('_internal')
+        else:
+            self.log_path = dir_path
         pass
 
     #for testing with radio
@@ -124,9 +134,13 @@ class Populate():
     #for testing with preset dataset WITHOUT the radio
     def populatefile(self):
         self.state = True
+
+
         #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
         #with open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/dateUpdate.txt', "w") as f, open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/datainvalids.txt', "r") as f1:
-        with open('dateUpdate.txt', "w") as f, open('D:\Programming\MetRocketry\Groundstation-GUI_Electron\Python_Backend\simulated_data.txt', "r") as f1: #note this should be temp (if program is built it wouuld read and write to this directory)  
+        with open(self.log_path + '/data_log.txt', "w") as f, open(self.log_path + '/simulated_data.txt', "r") as f1: #note this should be temp (if program is built it wouuld read and write to this directory)  
+            f.write(self.log_path)
+            f.flush()
 
             arrayList = f1.readlines()
 

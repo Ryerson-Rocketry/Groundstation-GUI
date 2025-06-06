@@ -1,0 +1,197 @@
+{
+  "main": {
+    "id": "3a15dd6a73052a0e",
+    "type": "split",
+    "children": [
+      {
+        "id": "4ddec7f3bc39e145",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7743354f992d7935",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DOCUMENTATION/Technical/Backend to Frontend Communication.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Backend to Frontend Communication"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "759faa9b5eb5c8af",
+    "type": "split",
+    "children": [
+      {
+        "id": "26f7b5110e28331e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "822cb505ba1dbcda",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "a726becff16c7392",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": " ",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "3bea9f0f56376625",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "065dd10953c20234",
+    "type": "split",
+    "children": [
+      {
+        "id": "240b07ced9c86537",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4c9ad18a57d49b75",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Markdown Exports/README.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for README"
+            }
+          },
+          {
+            "id": "218b46022fbdd816",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Markdown Exports/README.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from README"
+            }
+          },
+          {
+            "id": "f3c645df748b8dc4",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "67f2ec7697d5cf64",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Markdown Exports/README.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of README"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "obsidian-importer:Open Importer": false
+    }
+  },
+  "active": "7743354f992d7935",
+  "lastOpenFiles": [
+    "DOCUMENTATION/Diagrams/deployment_diagram.drawio",
+    "DOCUMENTATION/Diagrams/backend_class_diagram.drawio",
+    "DOCUMENTATION/Diagrams",
+    "DOCUMENTATION/Technical/Specifications.md",
+    "DOCUMENTATION/Technical/Backend to Frontend Communication.md",
+    "DOCUMENTATION/README.md",
+    "DOCUMENTATION/Technical/Implementation.md",
+    "README.md",
+    "Development Installation.md",
+    "DOCUMENTATION/Technical/Development Installation.md",
+    "Electron Docs/Technical/Technical Overview.md",
+    "Electron Docs/Technical/Development Installation.md",
+    "Electron Docs/Technical/Communication.md",
+    "Markdown Exports/README.md",
+    "Electron Docs/Electron Docs.md",
+    "Markdown Exports",
+    "Electron Docs/Technical",
+    "Electron Docs/Installation.md",
+    "GUI_V1_01.png",
+    "Engelbart.jpg.md",
+    "Welcome.md",
+    "Electron Docs"
+  ]
+}

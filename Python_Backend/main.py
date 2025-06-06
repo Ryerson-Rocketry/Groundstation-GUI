@@ -4,7 +4,6 @@ from flask_cors import CORS
 
 import populate
 import DataRead
-import os
 
 import datetime
 
@@ -20,7 +19,7 @@ def status():
     with app.app_context(): 
         #deltatime = ((datetime.datetime.now()) - current_app.config['start_time'] ).seconds
 
-        status = [{'state': True, 'runTime': 0, "radio_state": current_app.radio_read.state, "radio_port_id": current_app.radio_read.port_id}]
+        status = [{'state': True, 'runTime': 0, "radio_state": current_app.radio_read.state, "radio_port_id": current_app.radio_read.port_id, "flask_path": current_app.radio_read.log_path}]
         return jsonify(status)
 
 

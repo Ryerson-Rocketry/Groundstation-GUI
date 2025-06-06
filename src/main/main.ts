@@ -113,7 +113,7 @@ const createWindow = async () => {
       console.log(`stderr: ${data}`); // when error
     });
   }
-  else{ //must fork in root directory
+  else{ //will fork process from python portable exe
       //var pythonExe = require('child_process').spawn("D:/Programming/MetRocketry/Groundstation-GUI_Electron/release/build/win-unpacked/main.exe");
       //note that '../../../../' is needed as the actual directory to the root project files is embedded deeper in __dirname
       var pythonExe = require('child_process').spawn( path.join(__dirname, '../../../../') + "main.exe");
@@ -165,7 +165,8 @@ const createWindow = async () => {
   });
 
   mainWindow.on('closed', () => {
-    kill(pythonExe.pid, "SIGKILL"); //kill the child flask server
+    app.quit(); //note that this force exits the app, will kill child flask server automatically
+    //kill(pythonExe.pid, "SIGKILL"); //kill the child flask server
     mainWindow = null;
   });
 

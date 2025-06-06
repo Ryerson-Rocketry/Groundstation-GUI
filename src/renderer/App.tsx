@@ -33,6 +33,7 @@ import { CommonFloatingInfoBox } from './components/common/common_floating_infob
 import { purple } from '@mui/material/colors';
 import { LinkButton, RegularButton } from './components/mui_custom_components/mui_custom_component';
 import { useState } from 'react';
+import { NavHeader } from './components/common/nav_header';
 
 //TEST FLASK
 async function makeTestPostRequest() {
@@ -178,6 +179,9 @@ export default function App() {
   return (
     <>
     <Router>
+
+      
+
       <Routes>
         <Route path="/" element={<ThemeProvider theme={theme}><StartScreen /></ThemeProvider>} />
         <Route path="/home" element={<ThemeProvider theme={theme}><Home /></ThemeProvider>} />

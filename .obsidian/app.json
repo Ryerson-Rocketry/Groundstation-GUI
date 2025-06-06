@@ -1,0 +1,8 @@
+{
+  "alwaysUpdateLinks": true,
+  "userIgnoreFilters": [
+    "assets/",
+    "node_modules/",
+    "release/"
+  ]
+}

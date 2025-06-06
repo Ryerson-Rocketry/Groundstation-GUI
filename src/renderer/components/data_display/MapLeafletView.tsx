@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { Card } from '@mui/material';
-import { Coordinate, useStartingParametersStore } from '../../GlobalStateStores';
+import { Coordinate, useGeneralParametersStore, useStartingParametersStore } from '../../GlobalStateStores';
 
-import L, {LatLngExpression, Map} from "leaflet"; // Remember that this must also be imported
+import L, {LatLngBoundsExpression, LatLngExpression, Map} from "leaflet";
 import "leaflet.offline";
 
 import { MapContainer } from "react-leaflet";
@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 
 import rocketMarker from "../../../../assets/map/normal_marker.png";
 import launchMarker from "../../../../assets/map/star_marker.png";
+import backupMap from "../../../../assets/launchsitebackup.png";
 import axios from 'axios';
 
 var rocketIcon = L.icon({
@@ -36,6 +37,7 @@ type LeafletMapProps = { //constructor variables
   width: string
   height: string
   freePan: boolean
+  showBackupMap : boolean
 };
 
 //NOTE: Solutions here are modified from https://stackoverflow.com/questions/69091797/using-leaflet-offline-with-react
@@ -44,8 +46,9 @@ export type markerData = {
   marker: L.Marker<any>
 };
 
-export const LeafletMap = ({ width, height, freePan}: LeafletMapProps) => {
+export const LeafletMap = ({ width, height, freePan, showBackupMap}: LeafletMapProps) => {
   const [map, setMap] = useState<Map | undefined>();
+  const renderState = useGeneralParametersStore((state) => state.renderGUI);
   const [launchCoords, setLaunchCoords] = useState(useStartingParametersStore((state) => state.mapStartingMarkerCoordinates));
   const [rocketCoords, setRocketCoords] = useState(useStartingParametersStore((state) => state.mapStartingMarkerCoordinates));
   const [onFirstSetup, setFirstSetup] = useState(true);
@@ -54,19 +57,22 @@ export const LeafletMap = ({ width, height, freePan}: LeafletMapProps) => {
   
   useEffect(() => {
     const interval = setInterval(async () => {  
-      await axios.get('http://127.0.0.1:5000/read/gps/latest')
-      .then(function (response) {
-          //console.log("recieving data in PageGraph.tsx ");
-          setRocketCoords({'x': response.data[0]['x'], 'y': response.data[0]['y']});
-      })
-      .catch(function (error) {
-          console.log(error);
+      if (renderState == true){
+        await axios.get('http://127.0.0.1:5000/read/gps/latest')
+        .then(function (response) {
+            //console.log("recieving data in PageGraph.tsx ");
+            setRocketCoords({'x': response.data[0]['x'], 'y': response.data[0]['y']});
+        })
+        .catch(function (error) {
+            console.log(error);
       });
+      }
+
       
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [map, freePan]);   
+  }, [map, freePan, renderState]);   
 
   useEffect(() => {
    
@@ -109,6 +115,15 @@ export const LeafletMap = ({ width, height, freePan}: LeafletMapProps) => {
 
         L.marker([launchCoords.x, launchCoords.y], {icon: launchIcon}).addTo(map).bindPopup("Launch Point");
 
+        if (showBackupMap == true){
+          //var backupMap = L.marker([launchCoords.x, launchCoords.y], {icon: backupMapIcon}).addTo(map);
+          var imageBounds: LatLngBoundsExpression;
+          const scale = 0.120;
+          imageBounds = [[launchCoords.x -scale, launchCoords.y -scale], [launchCoords.x + scale, launchCoords.y + scale]];
+
+          L.imageOverlay(backupMap, imageBounds).addTo(map);
+        }
+        
         setFirstSetup(false);
       }
     
@@ -116,14 +131,16 @@ export const LeafletMap = ({ width, height, freePan}: LeafletMapProps) => {
     map.removeLayer(currentRocketMarker);
 
     var markerR = L.marker([rocketCoords.x, rocketCoords.y], {icon: rocketIcon}).addTo(map); //create the latest marker from rerender
+    markerR.setZIndexOffset(50);
+
     markerR.bindTooltip("Rocket");
 
     //add marker to marker tracking list
     setCurrentRocketMarker(markerR);
   }
 
-}, [map, rocketCoords, launchCoords]);
-  
+}, [map, rocketCoords, launchCoords, showBackupMap]);
+
   return(
     <MapContainer
       style={{ width: width, height: height }}
