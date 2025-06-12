@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Card } from '@mui/material';
 import { Coordinate, useGeneralParametersStore, useStartingParametersStore } from '../../GlobalStateStores';
 
-import L, {LatLngBoundsExpression, LatLngExpression, Map} from "leaflet";
+import L, {latLng, LatLng, LatLngBoundsExpression, LatLngExpression, Map} from "leaflet";
 import "leaflet.offline";
 
 import { MapContainer } from "react-leaflet";
@@ -15,6 +15,7 @@ import rocketMarker from "../../../../assets/map/normal_marker.png";
 import launchMarker from "../../../../assets/map/star_marker.png";
 import backupMap from "../../../../assets/launchsitebackup.png";
 import axios from 'axios';
+
 
 var rocketIcon = L.icon({
     iconUrl: rocketMarker,
@@ -46,22 +47,67 @@ export type markerData = {
   marker: L.Marker<any>
 };
 
+/* NOTE NEVER USE THIS BEYOND 2025 IREC; Best way to store and use a coordinate list would be to do it in the actual backend and request it in the front,
+however i do not want to touch the backend right now so soon to the competition (06-25) */
+import { create } from 'zustand';
+interface TempState {
+  coordinateList: LatLng[]
+  setCoordinateList: (newCoordinateList: LatLng[]) => void
+}
+
+export const useTempStateStore = create<TempState>((set) => ({
+  coordinateList: [L.latLng(0,0)],
+  setCoordinateList: (newCoordinateList) =>set((state) => ({ coordinateList: newCoordinateList })),
+}))
+
+
 export const LeafletMap = ({ width, height, freePan, showBackupMap}: LeafletMapProps) => {
   const [map, setMap] = useState<Map | undefined>();
   const renderState = useGeneralParametersStore((state) => state.renderGUI);
-  const [launchCoords, setLaunchCoords] = useState(useStartingParametersStore((state) => state.mapStartingMarkerCoordinates));
+  const launchCoords = useStartingParametersStore((state) => state.mapStartingMarkerCoordinates);
   const [rocketCoords, setRocketCoords] = useState(useStartingParametersStore((state) => state.mapStartingMarkerCoordinates));
   const [onFirstSetup, setFirstSetup] = useState(true);
 
   const[currentRocketMarker, setCurrentRocketMarker] = useState<L.Marker<any>>(L.marker([launchCoords.x, launchCoords.y], {icon: rocketIcon})); //dummy marker
   
+  //line drawing
+  const coordinatesList =  useTempStateStore((state) => state.coordinateList);
+  const setCoordinatesList =  useTempStateStore((state) => state.setCoordinateList);
+  const[trajectoryLine, setTrajectoryLine] = useState<L.Polyline>(new L.Polyline([L.latLng(launchCoords.x, launchCoords.y)])); //dummy marker
+
+  
+  /* NOTE NEVER USE THIS BEYOND 2025 IREC; Best way to store and use a coordinate list would be to do it in the actual backend and request it in the front,
+  however i do not want to touch the backend right now so soon to the competition (06-25) */
+  useEffect(() => {
+
+    if (coordinatesList[0].lat == 0 && coordinatesList[0].lng == 0){
+      console.log (launchCoords.x + " " + coordinatesList[0]);
+      useTempStateStore.getState().setCoordinateList([L.latLng(launchCoords.x, launchCoords.y)]);
+    }
+
+   }, [coordinatesList]
+  )
+  //----
+   
+
   useEffect(() => {
     const interval = setInterval(async () => {  
       if (renderState == true){
+
+        
         await axios.get('http://127.0.0.1:5000/read/gps/latest')
         .then(function (response) {
             //console.log("recieving data in PageGraph.tsx ");
+
+
+
             setRocketCoords({'x': response.data[0]['x'], 'y': response.data[0]['y']});
+            if (response.data[0]['x'] != 0 && response.data[0]['y'] != 0){
+              var newList = coordinatesList;
+              newList.push(L.latLng(response.data[0]['x'], response.data[0]['y']));
+              setCoordinatesList(newList);
+              setTrajectoryLine(new L.Polyline(coordinatesList));
+            }
         })
         .catch(function (error) {
             console.log(error);
@@ -77,7 +123,7 @@ export const LeafletMap = ({ width, height, freePan, showBackupMap}: LeafletMapP
   useEffect(() => {
    
       if (freePan == false){ //assumes rocket is centered
-            console.log(freePan);
+            //console.log(freePan);
             if (map != null){
               map.setView(L.latLng(rocketCoords.x,rocketCoords.y),15);
             } 
@@ -96,7 +142,9 @@ export const LeafletMap = ({ width, height, freePan, showBackupMap}: LeafletMapP
           "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
           {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            minZoom: 13,
+            minZoom: 10,
+            maxZoom: 20,
+            
           }
         );
 
@@ -126,11 +174,16 @@ export const LeafletMap = ({ width, height, freePan, showBackupMap}: LeafletMapP
         
         setFirstSetup(false);
       }
-    
-    //delete previous markers from previous rerender
+
+
+    //delete previous marker from previous rerender
     map.removeLayer(currentRocketMarker);
+    map.removeLayer(trajectoryLine);
 
     var markerR = L.marker([rocketCoords.x, rocketCoords.y], {icon: rocketIcon}).addTo(map); //create the latest marker from rerender
+    
+    trajectoryLine.addTo(map);
+
     markerR.setZIndexOffset(50);
 
     markerR.bindTooltip("Rocket");

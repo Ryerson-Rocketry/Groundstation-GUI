@@ -6,7 +6,7 @@ import './../css/PageHome.css';
 import Card from '@mui/material/Card';
 import { Button, ButtonGroup, Chip, createTheme, Divider, FormControl, FormControlLabel, FormLabel, Grid2, Radio, RadioGroup, Switch, ThemeProvider, useColorScheme } from '@mui/material';
 
-import {ChartMultiView, ChartView, DataPoint, DataPointAccelerometer} from '../components/data_display/GraphView';
+import {ChartLineMultiView, ChartLineView, ChartMultiView, ChartView, DataPoint, DataPointAccelerometer} from '../components/data_display/GraphView';
 import {GPSMap} from '../components/data_display/MapView';
 
 import { NavHeader } from '../components/common/nav_header';
@@ -50,11 +50,11 @@ const Layout = () => {
                         var dataSet: DataPointAccelerometer[];
                         dataSet = [];
 
+                        //console.log("Pinging flask server for data on multi axis graph:");
                         await axios.get('http://127.0.0.1:5000/read/graph/all')
                         .then(function (response) {
                             //console.log(accelx[0]);
                             for (let i = 0; i < response.data[4].length; i++){
-                                
                                 dataSet.push({x: response.data[4][i].x, xx:response.data[4][i].y,  xy:response.data[5][i].y,  xz:response.data[6][i].y, id:(response.data[4][i].id).toString() } )
                             }
                             
@@ -62,23 +62,26 @@ const Layout = () => {
                             
                         })
                         .catch(function (error) {
+                            console.log("FAILED TO GET DATA FOR MULTI AXIS ACCELERATION GRAPH, ERROR BELOW: ");
                             console.log(error);
                         });
                     }
                     else{
+                        //console.log("Pinging flask server for data on graph of index:" + ind);
                         await axios.get('http://127.0.0.1:5000/read/graph/' + ind)
                             .then(function (response) {
-                                console.log("recieving data in PageHome.tsx using:" + ind);
+                                //console.log("recieving data on index:" + ind + "Data is:" + response.data[0].toString());
                                 setNewData(response.data); //note since we already parsed the data in python into the proper format, no work to be done here
                             })
                             .catch(function (error) {
+                                console.log("ERROR IN GRAPH RETRIEVAL OF DATA INDEX: " + ind);
                                 console.log(error);
                             });
                         }
                     }
 
 
-            }, 100);
+            }, 200);
             
             return () => clearInterval(interval);
         }, [graphIndex, renderState]); //note, [graphIndex] is considered a dependency and thus this interval will be rerendered (with the new graphIndex value) every time graph index changes
@@ -88,12 +91,12 @@ const Layout = () => {
             element = [...Array(3).keys()].map((key) => 
             (
                 <div>
-                    <ChartMultiView title= {graphNames[key+1] + " Graph"} xAxis="Time (Sec)" yAxis = {graphNames[key+1] + "("+ graphUnits[key+1] + ")"} dataset = { newMultiData } graphheight={53.3} pxheight={500} key={key} legend={graphNames[key+1]}></ChartMultiView>            
+                    <ChartMultiView title= {graphNames[key+1] + " Graph"} xAxis="Time (Sec)" yAxis = { "Axis Acceleration (G)"} dataset = { newMultiData } graphheight={53.3} pxheight={500} key={key} legend={graphNames[key+1]}></ChartMultiView>            
                 </div>  
             ));
         }
         else{
-            element = <ChartView title="Placeholder Vs. Time" xAxis= "Time (Sec)" yAxis= {GLOBAL_NAMES[ind] + " ("+ GLOBAL_UNITS[ind] +")"} data = { newData } graphheight={53.3} pxheight={500} legend={GLOBAL_NAMES[graphIndex]}/>
+            element = <ChartLineView title="Vs. Time" xAxis= "Time (Sec)" yAxis= {GLOBAL_NAMES[ind] + " ("+ GLOBAL_UNITS[ind] +")"} data = { newData } graphheight={53.3} pxheight={500} legend={GLOBAL_NAMES[graphIndex]}/>
         }
         return element;
     }
@@ -115,23 +118,25 @@ const Layout = () => {
 
     function TextWrapper() {
         const [valueArray, setNewValueArray] = useState([0, 0, 0, 0, 0, 0]);
-        const [dictNameMatch] = useState(["Pressure", "Temperature", "Voltage", "X Axis Acceleration","Y Axis Acceleration", "Z Axis Acceleration"])
+        const [dictNameMatch] = useState(["Pressure", "Temperature", "Voltage", "X Axis Acceleration","Y Axis Acceleration", "Z Axis Acceleration" , "Latitude", "Longitude"])
         const [dictUnitMatch] = useState(["mBar", "C", "V", "G", "G", "G"])
         
         useEffect(() => {
             const interval = setInterval(async () => {  
                 if (renderState == true){
+                    //console.log("attempting backend api call for latest text readout data:");
                     await axios.get('http://127.0.0.1:5000/read/last/0')
                     .then(function (response) {
                         //console.log(response.data);
                         setNewValueArray(response.data); //note since we already parsed the data in python into the proper format, no work to be done here
                     })
                     .catch(function (error) {
+                        console.log("ERROR IN DATA READ INDEX:");
                         console.log(error);
                     });
                 }
 
-            }, 1000);
+            }, 500);
 
             return () => clearInterval(interval);
         }, [valueArray, renderState]); 
@@ -140,12 +145,11 @@ const Layout = () => {
 
         return (
             
-            [...Array(6).keys()].map((key) => (
-                <Card className= "card" variant="outlined" key={key}> 
+            [...Array(8).keys()].map((key) => (
+                <Card className= "card_readout_home" variant="outlined" key={key}> 
                     {dictNameMatch[key]}
                     <br/>
                     {valueArray[key]}  {dictUnitMatch[key]} 
-
                 </Card>
             ))
 
@@ -223,8 +227,9 @@ const Layout = () => {
                                 </FormControl>
       
                             </Card>
+
+                                {ChartWrapper(graphIndex)} 
                             
-                            {ChartWrapper(graphIndex)} 
                         </div>    
                     </div>
 

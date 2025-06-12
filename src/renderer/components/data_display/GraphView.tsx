@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { ScatterChart } from '@mui/x-charts/ScatterChart';
-import { Card } from '@mui/material';
+import { Card, Paper } from '@mui/material';
 import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { DatasetType } from '@mui/x-charts/internals';
+import { LineChart } from '@mui/x-charts';
+
+import { AxisConfig } from '@mui/x-charts';
 
 /*
 type Chart = {
@@ -56,11 +59,11 @@ export const ChartView = ({ title, xAxis, yAxis, data, graphheight, pxheight, le
   <Card className= "card" variant="outlined" sx={{ height: graphheight+'vh' }}>
     <ScatterChart 
       series={[{ data, label: legend, id: 'placeholder' }]}
-      height={pxheight}
       xAxis={[{ label: xAxis}]}
-      yAxis={[{ label: yAxis}]}
+      yAxis={[{ label: yAxis, tickMinStep:0.1, tickMaxStep:10}]}
       margin={{ top: 10, bottom: 40, left: 50, right: 10 }} 
-
+      
+      
       // https://stackoverflow.com/questions/77853618/in-mui-x-charts-how-to-prevent-linechart-y-axis-label-from-overlapping-with-tic
       sx={{
         [`.${axisClasses.left} .${axisClasses.label}`]: {
@@ -72,6 +75,31 @@ export const ChartView = ({ title, xAxis, yAxis, data, graphheight, pxheight, le
   </Card> 
 
 </aside>
+
+export const ChartLineView = ({ title, xAxis, yAxis, data, graphheight, pxheight, legend }: Chart) => {
+  return(
+  <Card className= "card" variant="outlined" sx={{ height: graphheight+'vh' }}>
+    <LineChart 
+      dataset={data}
+      // @ts-ignore  
+      series={[{dataKey: 'y', id: 'placeholder', curve: "linear", baseline: 'min' }]}
+      xAxis={[{ dataKey: 'x', label: xAxis}]}
+      yAxis={[{ label: yAxis , tickMinStep:0.1, tickMaxStep:2, tickNumber:8}]}
+      margin={{ top: 10, bottom: 40, left: 50, right: 10 }} 
+
+      
+      // https://stackoverflow.com/questions/77853618/in-mui-x-charts-how-to-prevent-linechart-y-axis-label-from-overlapping-with-tic
+      sx={{
+        [`.${axisClasses.left} .${axisClasses.label}`]: {
+            transform: 'translate(-22px, 0)', // translate the label according to the need
+        },
+        padding:'14px'
+      }}
+    />
+  </Card>
+  ); 
+}
+
 
 
 export type DataPointAccelerometer = {
@@ -95,9 +123,38 @@ type ChartMulti = {
   dataset: DataPointAccelerometer[]
 };
 
+export const ChartLineMultiView = ({ title, xAxis, yAxis, graphheight, pxheight, legend, dataset}: ChartMulti) => {
+
+  return(
+    <Card className= "card" component= {Paper} variant="outlined" sx={{ height: graphheight+'vh'}}>
+      <LineChart 
+        dataset={dataset}
+        series={[
+          {dataKey: 'xx', id: 'xx', curve: "linear" },
+          {dataKey: 'xy', id: 'xy', curve: "linear" },
+          {dataKey: 'xz', id: 'xz', curve: "linear" },
+        ]}
+        xAxis={[{ dataKey: 'x', label: xAxis}]}
+        yAxis={[{ label: yAxis, tickMinStep: 0.5, tickInterval: Array.from(Array(5000).keys())}]}
+        margin={{ top: 10, bottom: 50, left: 50, right: 10 }} 
+
+        // https://stackoverflow.com/questions/77853618/in-mui-x-charts-how-to-prevent-linechart-y-axis-label-from-overlapping-with-tic
+        sx={{
+          [`.${axisClasses.left} .${axisClasses.label}`]: {
+              transform: 'translate(-22px, 0)', // translate the label according to the need
+          },
+          padding:'14px'
+        }}
+      />
+    </Card> 
+
+  )
+  
+}
+
 export const ChartMultiView = ({ title, xAxis, yAxis, graphheight, pxheight, legend, dataset}: ChartMulti) => <aside>
 
-  <Card className= "card" variant="outlined" sx={{ height: graphheight+'vh' }}>
+  <Card className= "card" component= {Paper} variant="outlined" sx={{ height: graphheight+'vh'}}>
     <ScatterChart 
       dataset={dataset}
       series={[ 
@@ -105,10 +162,9 @@ export const ChartMultiView = ({ title, xAxis, yAxis, graphheight, pxheight, leg
         { datasetKeys: { id: 'id', x: 'x', y: 'xy' }, label: 'Y Axis' },
         { datasetKeys: { id: 'id', x: 'x', y: 'xz' }, label: 'Z Axis' },
       ]}
-      height={pxheight}
       xAxis={[{ label: xAxis}]}
       yAxis={[{ label: yAxis}]}
-      margin={{ top: 10, bottom: 40, left: 50, right: 10 }} 
+      margin={{ top: 10, bottom: 50, left: 50, right: 10 }} 
 
       // https://stackoverflow.com/questions/77853618/in-mui-x-charts-how-to-prevent-linechart-y-axis-label-from-overlapping-with-tic
       sx={{

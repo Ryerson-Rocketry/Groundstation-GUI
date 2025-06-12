@@ -26,10 +26,11 @@ const renderConnectionStatusComponent = (connectionStatus: boolean) => {
 
 export const StartScreenFloatingToolbox = () => {
     const[tempStartingCoordinate, setTempCoord] = useState(useStartingParametersStore((state) => state.mapStartingMarkerCoordinates));
+    const setCoords = useStartingParametersStore((state) => state.setStartingMarkerCoordinates);
     const[tempPortID, setPort] = useState(useStartingParametersStore((state) => state.portID));
 
     function saveStartingCoordinate() {
-        useStartingParametersStore.getState().setStartingMarkerCoordinates(tempStartingCoordinate);
+        setCoords(tempStartingCoordinate);
         console.log("set starting coordinates as: "  + useStartingParametersStore.getState().mapStartingMarkerCoordinates.x + " " + useStartingParametersStore.getState().mapStartingMarkerCoordinates.y);
     }
 

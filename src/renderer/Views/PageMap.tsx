@@ -23,7 +23,7 @@ const Layout = () => {
             <div className='page_content_centered_map' style={{marginTop: "50px"}}>
                 <Card>
                     <div style={{margin: "10px"}}>
-                        <LeafletMap width = "80vw" height ="80vh" freePan= {true} showBackupMap = {true}></LeafletMap>
+                        <LeafletMap width = "80vw" height ="80vh" freePan= {true} showBackupMap = {false}></LeafletMap>
                     </div>  
                 </Card>
                 
@@ -34,4 +34,4 @@ const Layout = () => {
     )
   };
   
-  export default Layout;
+export default Layout;

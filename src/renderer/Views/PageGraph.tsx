@@ -7,7 +7,7 @@ import './../css/PageGraph.css';
 import Card from '@mui/material/Card';
 import { Button, ButtonGroup, Chip } from '@mui/material';
 
-import {ChartView, ChartMultiView, DataPointAccelerometer, DataPoint} from '../components/data_display/GraphView';
+import {ChartView, ChartMultiView, DataPointAccelerometer, DataPoint, ChartLineMultiView, ChartLineView} from '../components/data_display/GraphView';
 
 import { NavHeader } from '../components/common/nav_header';
 import axios from 'axios';
@@ -18,8 +18,8 @@ import { useGeneralParametersStore } from '../GlobalStateStores';
 import { CommonFloatingToolBox } from '../components/common/common_floating _toolbox';
 
 
-const GRAPHHEIGHT = 43;
-const GRAPHPXHEIGHT = 400;
+const GRAPHHEIGHT = 38;
+const GRAPHPXHEIGHT = 300;
 
 const Layout = () => {
     const renderState = useGeneralParametersStore((state) => state.renderGUI);
@@ -30,6 +30,7 @@ const Layout = () => {
         const [newData, setNewData] = useState(
         [[{x:0, y:0, id: 0}],
         [{x:0, y:0, id: 0}],
+        [{x:0, y:0, id: 0}],
         [{x:0, y:0, id: 0}]]
     );
     
@@ -37,12 +38,14 @@ const Layout = () => {
         useEffect(() => {
             const interval = setInterval(async () => {  
                 if (renderState == true){
+                    //console.log("Pinging Flask server for new data on all graphs:");
                     await axios.get('http://127.0.0.1:5000/read/graph/all')
                     .then(function (response) {
-                        //console.log("recieving data in PageGraph.tsx " + response.data);
+                       // console.log("Recieved data as:  " + response.data[0]);
                         setNewData(response.data);
                     })
                     .catch(function (error) {
+                        console.log("FAILED TO GET DATA, ERROR BELOW:");
                         console.log(error);
                     });
                 }
@@ -53,12 +56,12 @@ const Layout = () => {
         }, [newData, renderState]); 
         
         
-
         return (
                 [...Array(3).keys()].map((key) => (
+                    
                     <div>
-                        <div style={{textAlign:'center'}}> <Chip label={graphNames[key] + " Graph"} size="small" style={{textAlign:'center'}}/> </div>
-                        <ChartView title= {graphNames[key+1] + " Graph"} xAxis="Time (Sec)" yAxis = {graphNames[key+1] + "("+ graphUnits[key+1] + ")"} data = { newData[key+1] } graphheight={GRAPHHEIGHT} pxheight={GRAPHPXHEIGHT} key={key} legend={graphNames[key+1]}></ChartView>            
+                        <div style={{textAlign:'center'}}> <Chip label={graphNames[key+1] + " Graph"} size="small" style={{textAlign:'center'}}/> </div>
+                        <ChartLineView title= {graphNames[key+1] + " Graph"} xAxis="Time (Sec)" yAxis = {graphNames[key+1] + "("+ graphUnits[key+1] + ")"} data = { newData[key+1] } graphheight={GRAPHHEIGHT} pxheight={GRAPHPXHEIGHT} key={key} legend={graphNames[key+1]}></ChartLineView>            
                     </div>  
                 ))
 

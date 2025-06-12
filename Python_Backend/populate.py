@@ -1,6 +1,7 @@
 import time
 import time as t
 import serial
+import datetime
 #import keyboard 
 
 import DataRead
@@ -16,7 +17,7 @@ class Populate():
 
     state: bool = False
 
-    port_id: str = "COM5"
+    port_id: str = "COM6"
 
     log_path: str = ""
 
@@ -32,85 +33,110 @@ class Populate():
 
     #for testing with radio
     def radiorun(self):
-        port = self.port_id
+        with open(self.log_path + '/data_log.txt', "a") as f:
+            port = self.port_id
 
-        baud  = 57600 
-        ####    initilization    ####
-        i =0 
-        count = 0
-        #uno = serial.Serial(port,115200)
-        flag=True
-        radio_connect = True
-        radio_connect2 = False
+            baud  = 115200 
+            ####    initilization    ####
+            i =0 
+            count = 0
+            #uno = serial.Serial(port,115200)
+            flag=True
+            radio_connect = True
+            radio_connect2 = False
 
-        rx_command = False
-        while True:
+            rx_command = False
+            while True:
+                f.write("MAKING CONNECT ATTEMPT" + self.port_id + "\n")
+                f.flush()
 
-            try:
-                radio =serial.Serial(port=port,baudrate=baud)
-
-                radio_connect = True
-                break
-            except Exception as e:
-                print(e)
-                radio_connect = False
-                exit(-1)
-
-                #MODIFIED SINCE LAST YEAR
-                self.state = True
-
-        print("Connected")
-
-        #filedescriptors = termios.tcgetattr(sys.stdin) # retrieves current terminal settings 
-        #tty.setcbreak(sys.stdin) # allows for single character commands in terminal ; RAW mode instead of COOKED  mode
-        #tty and termios make sure terminal reads the key inputs 
-
-        while (radio_connect == True):
             
-            #byteInWait = radio._RadioSerialBuffer.inWaiting()
+                try:
+                    radio =serial.Serial(port=port,baudrate=baud)
 
-            data_str= radio.readline().strip().decode("utf-8") #write a string
-            
-            if (data_str==None):
-                print("no data in")
-                
-            else:
-                print (data_str)
-                self.populatefileradio(data_str)
-                #data_str= data_str.split('\n')
-                #print("data is %s " % data_str[0])
-                #print("# bytes in wait: %d \n" % byteInWait)
-                t.sleep(1)
-                print('...\n')
-                '''
-                if (data_str[0] == 'idle'):
-                    start=t.time()
-                    while True:
-                        end=t.time()
-                        timer=end-start
-                        if keyboard.is_pressed('space'):
-                            rx_command = True
-                            print("sending launch command \n") 
-                            t.sleep(1)
-                            flag=False
-                            break
-                        elif (timer>2):
-                            rx_command= False
-                            break
-                if flag==False:
+                    radio_connect = True
+                    self.state = True
                     break
+                except Exception as e:
+                    f.write("FAILED AT INITIAL CONNECT" + "\n")
+                    f.flush()
+                    #print(e)
+                    radio_connect = False
+                    exit(-1)
+
+                    #MODIFIED SINCE LAST YEAR
+                    self.state = False
+
+
+            #print("Connected")
+
+            #filedescriptors = termios.tcgetattr(sys.stdin) # retrieves current terminal settings 
+            #tty.setcbreak(sys.stdin) # allows for single character commands in terminal ; RAW mode instead of COOKED  mode
+            #tty and termios make sure terminal reads the key inputs 
+
+            while (radio_connect == True):
+                f.write("CONNECTED" + "\n"  + datetime.now.time())
+                f.flush()
+
+                self.state = True
+                #byteInWait = radio._RadioSerialBuffer.inWaiting()
+
+                data_str= radio.readline().strip().decode("utf-8") #write a string
                 
+                if (data_str==None):
+                    print("no data in")
+
+                    f.write("no data in " + self.port_id)
+                    f.flush()
+
+                    
                 else:
-                    #t.sleep(0.5)
-                    print("data command is: %s\n"% data_str[0]) 
-                    radio.sendCommand("launch\n")
-                    print("launch command sent\n")
+                    print (data_str)
+                    #self.populatefileradio(data_str)
+
+
+                    f.write(data_str)
+
+
+
+                    self.data_read_obj.add_data_points(data_str)
+
+
+                    #data_str= data_str.split('\n')
+                    #print("data is %s " % data_str[0])
+                    #print("# bytes in wait: %d \n" % byteInWait)
                     t.sleep(1)
-                    if keyboard.is_pressed('D'):
-                        t.sleep(1)
-                        print("exitting connect loop \n")
+                    print('...\n')
+                    '''
+                    if (data_str[0] == 'idle'):
+                        start=t.time()
+                        while True:
+                            end=t.time()
+                            timer=end-start
+                            if keyboard.is_pressed('space'):
+                                rx_command = True
+                                print("sending launch command \n") 
+                                t.sleep(1)
+                                flag=False
+                                break
+                            elif (timer>2):
+                                rx_command= False
+                                break
+                    if flag==False:
                         break
-                '''
+                    
+                    else:
+                        #t.sleep(0.5)
+                        print("data command is: %s\n"% data_str[0]) 
+                        radio.sendCommand("launch\n")
+                        print("launch command sent\n")
+                        t.sleep(1)
+                        if keyboard.is_pressed('D'):
+                            t.sleep(1)
+                            print("exitting connect loop \n")
+                            break
+                    '''
+        f.close()
 
             
     #for testing WITH the radio
@@ -123,7 +149,7 @@ class Populate():
                 f.write(data_str + "\n")
                 f.flush()
 
-            time.sleep(1)
+            time.sleep(10)
 
             self.state = True
         f.close()
@@ -138,7 +164,7 @@ class Populate():
 
         #with open('dateUpdate.txt', "w") as f, open('data.txt', "r") as f1:
         #with open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/dateUpdate.txt', "w") as f, open('D:/Programming/MetRocketry/Groundstation-GUI_Electron/Python Backend/datainvalids.txt', "r") as f1:
-        with open(self.log_path + '/data_log.txt', "w") as f, open(self.log_path + '/simulated_data.txt', "r") as f1: #note this should be temp (if program is built it wouuld read and write to this directory)  
+        with open(self.log_path + '/data_log_demo.txt', "w") as f, open(self.log_path + '/simulated_data.txt', "r") as f1: #note this should be temp (if program is built it wouuld read and write to this directory)  
             f.write(self.log_path)
             f.flush()
 
@@ -152,7 +178,7 @@ class Populate():
                 f.write(i)
                 f.flush()
                 
-                time.sleep(2)
+                time.sleep(5)
 
     def runpopulatefile(self, demo: bool): #this method will run the data retrieval from radio/test file in a separate thread (or else it would be blocking execution from the rest of the backend)
         if (demo == True):
@@ -161,7 +187,7 @@ class Populate():
             threading.Thread(target=self.radiorun).start()  
 
     
-pop = Populate(DataRead.DataRead())
+#pop = Populate(DataRead.DataRead())
 
 #pop.populatefile()
 #pop.populatefileradio()

@@ -17,7 +17,7 @@
     row-gap: 15px;
     
     margin-bottom: 0%;
-    margin-top: 1.5%;
+    margin-top: -5vh;
 
     max-height: 60vh;
 
@@ -48,12 +48,19 @@
 
 .gauge_row{
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .card{
     background: linear-gradient(to right bottom,rgb(3, 3, 3),rgb(49, 49, 49))
 }
+
+.card_readout_home{
+    background: linear-gradient(to right bottom,rgb(3, 3, 3),rgb(49, 49, 49));
+}
+
 
 .card_right_align{
     background: linear-gradient(to right bottom,rgb(3, 3, 3),rgb(49, 49, 49));
