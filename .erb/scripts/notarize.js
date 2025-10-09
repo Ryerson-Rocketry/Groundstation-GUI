@@ -1,7 +1,9 @@
-const { notarize } = require('@electron/notarize');
+//const { notarize } = require('@electron/notarize');
 const { build } = require('../../package.json');
 
 exports.default = async function notarizeMacos(context) {
+
+  const mm = await import('@electron/notarize');
   const { electronPlatformName, appOutDir } = context;
   if (electronPlatformName !== 'darwin') {
     return;
@@ -27,7 +29,7 @@ exports.default = async function notarizeMacos(context) {
 
   const appName = context.packager.appInfo.productFilename;
 
-  await notarize({
+  await mm.notarize({
     tool: 'notarytool',
     appBundleId: build.appId,
     appPath: `${appOutDir}/${appName}.app`,

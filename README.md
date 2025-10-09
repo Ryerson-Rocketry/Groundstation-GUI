@@ -1,16 +1,42 @@
-# Electron Ground station Tracker
-This GUI aims to convert the pyside6 based ground station GUI used from 2023-2024 into an Electron based GUI from 2025 onwards.
+<div align="center">
+  <a href="https://github.com/rackman404/Multimedia-Desktop-Application">
+	<img src="_Documentation/Images/gitdocs/icon.png" alt="Logo" width="160" height="160">
+  </a>
 
-# Description
+  <h3 align="center">Ground Station GUI Application</h3>
 
-The GUI is intended to display telemetry data from a rocket launch. This is done by monitoring a serial port with a radio connected and parsing the data sent in from this serial port (as a comma separated string). This data gets filtered and stored in a internal flask server on the backend. The frontend Electron program will then periodically requests this data and render it.
+  <p align="center">
+    Desktop application that provides visual telemetry data transmitted from MetRocketry's Rockets during launch. 
+    <br />
+    <a href="https://github.com/Ryerson-Rocketry/Groundstation-GUI/tree/main/_Documentation"><strong>Explore the docs (TBD) »</strong></a>
+    <br />
+    <a href="https://github.com/Ryerson-Rocketry/Groundstation-GUI/issues">Report Bug</a>
+  </p>
+</div>
+### Overview 
+This GUI aims to convert the Pyside6 based ground station SRAD GUI used from 2023-2024 into an Electron based GUI from 2025 onwards due to the ease of development.
 
-<a href="https://ibb.co/zhGWKVn0"><img src="https://i.ibb.co/KjFcCx03/GUI-V1-01.png" alt="GUI-V1-01" border="0"></a>
+# About This Project
+
+![preview](_Documentation/Images/GUI-V1-01.png)
 <sub><sup> V1.01 Dashboard Demo </sup></sub> 
+
+# Overview
+This project is a Student Student Researched & Developed (SRAD) GUI that receives telemetry data transmitted from a given rocket before formatting and displaying it to the user. This is done by monitoring a serial port with a radio connected and parsing the data sent in from this serial port (as a comma separated string). This data gets filtered and stored in a internal flask server on the backend. The frontend Electron program will then periodically requests this data and render it.
+
+
+# Built With
+
+### Tech Stack
+* [![Tech Stack Badge](https://img.shields.io/badge/Electron-blue?style=for-the-badge&logo=electron&logoColor=61DAFB)](https://www.electronjs.org) - Framework
+	* [![Tech Stack Badge](https://img.shields.io/badge/React-blue?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev) - Frontend Library/Framework
+		* [![Tech Stack Badge](https://img.shields.io/badge/Materials_UI-red?style=for-the-badge&logo=mui&logoColor=61DAFB)](https://mui.com) - Frontend UI Library
+		*  [![Tech Stack Badge](https://img.shields.io/badge/Leaflet-red?style=for-the-badge&logo=leaflet&logoColor=61DAFB)](https://leafletjs.com) - Mapping Library
+	* [![Tech Stack Badge](https://img.shields.io/badge/Node.js-blue?style=for-the-badge&logo=nodedotjs&logoColor=61DAFB)](https://nodejs.org/en) - Backend Framework (Main)
+	* [![Tech Stack Badge](https://img.shields.io/badge/flask-blue?style=for-the-badge&logo=flask&logoColor=61DAFB)](https://flask.palletsprojects.com/en/stable/) - Backend Framework (Radio)	  
 
 # Getting Started
 
-**Note**: If contributing or developing this project , see README in 'DOCUMENTATION' folder instead:
 ### Installation
 
 Production Build (Note: Windows only) - Available in “Releases” on the right sidebar in the repository:
@@ -33,55 +59,20 @@ To Run the GUI once opened:
 **If GUI is to be used offline:**
 4. Within the map shown on the left in the dashboard, press the bottommost "+" button on the top left to save the map tiles near the currently zoomed in location. This will save them locally for use if host laptop/computer has no WIFI/data.
 
-  
 ### Demo Setup (Without radio as well as pre-set Demo data)
 
 - Simply press “Demo Mode” and “Click Enter Dashboard”
 	- Demo data automatically included within the installation
 
+### Development Installation
 
-# Roadmap (Updated: 2025-06-06)
-### QOL
-- Reformat starting screen (hidden menu on left to contain parameter setup and other)
-- Add instructions manual on settings page and more comprehensive settings options
-	- Additional options to be added:
-		- GUI update timing: Specify the interval between each request to backend for new data to render
-		- Data Purge: Purge all or selected data stored in backend collected from radio
-- Add option to save starting parameters as new default on application start-up
-### Frontend
-- For https://github.com/Ryerson-Rocketry/Rocket-Antenna-Tracker integration:
-	- Additional 3D Graph to display rocket current and predicted trajectory on 3 axis's centred on rocket launch point
-	- Additional raw data readout for rocket azimuth
-- Higher resolution backup map image for launch site map (for use if OSM map fails in offline use)
-- GPS map: Add lines connecting each 
+TBD
 
-### Frontend and Backend
-- SQLite integration
-	- Record all data from the current launch session and save them to a locally hosted DB
-	- Provide ability to replay this data at a later time
 
-### Misc
-- Allow data headers to be prespecified from a config file (instead of being hardcoded)
-- Refactor frontend code
-- Add more technical documentation
-
-# Built With
-
-### Software Stack:
-- [Electron](https://www.electronjs.org/): Frontend desktop application framework
-	- [Electron React Boilerplate](https://electron-react-boilerplate.js.org)(Tool): Boilerplate setup with react pre-integrated
-	- [Axios](https://www.npmjs.com/package/axios)(Library): HTTP client for interfacing between internal Flask server and the Electron application
-	- [React](https://react.dev)(Library): 
-	- [Material UI](https://mui.com/material-ui/)(Library): Ready made UI component library for use with React
-	- [Material UI X](https://mui.com/x/)(Library): Ready made graphing library for use with React
-	- [Leaflet](https://leafletjs.com/)(Library): Open source interactive mapping library
-- [Flask](https://electron-react-boilerplate.js.org): Backend Python web server framework
-	- [PyInstaller](https://pyinstaller.org/en/stable/)(Tool): Python Application Packaging Tool
-	- [Pyserial](https://pypi.org/project/pyserial/)(Library): Python serial port interface library
 
 ### Languages:
 - Python
-- JavaScript
+- JavaScript/Typescript
 
 # Attributions 
 

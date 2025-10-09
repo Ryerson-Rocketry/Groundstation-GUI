@@ -84,7 +84,7 @@ export const ChartLineView = ({ title, xAxis, yAxis, data, graphheight, pxheight
       // @ts-ignore  
       series={[{dataKey: 'y', id: 'placeholder', curve: "linear", baseline: 'min' }]}
       xAxis={[{ dataKey: 'x', label: xAxis}]}
-      yAxis={[{ label: yAxis , tickMinStep:0.1, tickMaxStep:2, tickNumber:8}]}
+      yAxis={[{ label: yAxis , tickMinStep:0.01, tickMaxStep:2}]}
       margin={{ top: 10, bottom: 40, left: 50, right: 10 }} 
 
       

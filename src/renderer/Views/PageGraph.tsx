@@ -58,7 +58,6 @@ const Layout = () => {
         
         return (
                 [...Array(3).keys()].map((key) => (
-                    
                     <div>
                         <div style={{textAlign:'center'}}> <Chip label={graphNames[key+1] + " Graph"} size="small" style={{textAlign:'center'}}/> </div>
                         <ChartLineView title= {graphNames[key+1] + " Graph"} xAxis="Time (Sec)" yAxis = {graphNames[key+1] + "("+ graphUnits[key+1] + ")"} data = { newData[key+1] } graphheight={GRAPHHEIGHT} pxheight={GRAPHPXHEIGHT} key={key} legend={graphNames[key+1]}></ChartLineView>            

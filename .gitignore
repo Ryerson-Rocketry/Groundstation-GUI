@@ -29,6 +29,4 @@ npm-debug.log.*
 
 Python_Backend/build
 Python_Backend/dist
-Python_Backend/data_log.txt
-Python_Backend/datainvalids.txt
 Python_Backend/main.spec

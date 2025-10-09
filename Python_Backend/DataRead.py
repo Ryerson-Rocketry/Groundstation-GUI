@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import random
 import time
 
 
@@ -90,11 +91,13 @@ class DataRead():
     def get_coordinates(self, all: bool):
         while (self.writing == True):
             time.sleep(1)
+        self.writing = True
     
         if (all == False):
             
             specific_list = []
             specific_list.append({'x': self.data_lists[7][len(self.data_lists[0])-1], 'y': self.data_lists[8][len(self.data_lists[0])-1]})
+            self.writing = False
             return specific_list
         
         else:
@@ -143,18 +146,20 @@ class DataRead():
         #    self.data_lists[i].append(float(raw_data[i])) 
 
         #retarded way of doing things
-        try:
-            for i in range(9):
+        for i in range(9):
+            try:
                 float(raw_data[i]) #dont save data if it cannot be parsed into a number
-        except:
-            return
+            except:
+                return
 
 
         try:
             self.data_lists[0].append(round(float(raw_data[0]),2))
             self.data_lists[1].append(round(float(raw_data[6]),2))
             self.data_lists[2].append(round(float(raw_data[5]),2))
-            self.data_lists[3].append(round(float(raw_data[1]),2))
+            #self.data_lists[3].append(round(float(raw_data[1]),2))
+            #self.data_lists[3].append(7.22-(self.data_lists[0][len(self.data_lists[0])-1]/100 + random.randint(1, 5)/100))
+            self.data_lists[3].append(503243593232)
             self.data_lists[4].append(round(float(raw_data[2]),2))
             self.data_lists[5].append(round(float(raw_data[3]),2))
             self.data_lists[6].append(round(float(raw_data[4]),2))
